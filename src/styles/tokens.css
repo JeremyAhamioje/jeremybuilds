@@ -1,0 +1,40 @@
+/*
+ * Design tokens. Every colour, family and type step the site uses.
+ * Change the palette here, not in component files.
+ */
+:root {
+  /* ---------------------------------------------------------------- colour */
+
+  --bg: #0a0908;
+  /* Warm off-white, matched to the marble rather than pure #fff. */
+  --ink: #efe9df;
+  --ink-dim: #8f8578;
+  --ink-faint: #4a453d;
+
+  /*
+   * Terracotta rather than a signal orange — it echoes the fresco the artwork
+   * comes from, and stays warm against the marble instead of fighting it.
+   * Used sparingly: one bracket, one star, one hover state.
+   */
+  --accent: #de5a24;
+
+  --rule: rgba(239, 233, 223, 0.16);
+
+  /* --------------------------------------------------------------- type */
+
+  --font-display: 'Big Shoulders Display Variable', 'Arial Narrow', sans-serif;
+  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Archivo Variable', system-ui, -apple-system, sans-serif;
+
+  /*
+   * Monumental headline. Scales on vw so it stays edge-to-edge at any width,
+   * clamped so it neither disappears on a phone nor overruns a wide monitor.
+   */
+  --step-monument: clamp(3.75rem, 12.5vw, 11.5rem);
+  --step-numeral: clamp(3.25rem, 7.5vw, 6.5rem);
+  --step-eyebrow: clamp(1.5rem, 2.6vw, 2.4rem);
+  --step-body: clamp(0.82rem, 1.05vw, 1.02rem);
+  --step-meta: clamp(0.62rem, 0.78vw, 0.74rem);
+
+  --gutter: clamp(1.1rem, 3.4vw, 3.25rem);
+}

@@ -3,18 +3,19 @@ import { forwardRef } from 'react'
 /**
  * The `</>` the hands reach toward.
  *
- * Drawn as stroked SVG geometry rather than text. A font would mean either a
- * webfont dependency for three glyphs, or accepting whatever monospace the OS
- * happens to supply — and neither gives control over the weight, the bracket
- * angle, or the balance against the artwork. Geometry stays razor sharp at any
- * size, costs nothing to load, and is tunable to the last unit.
+ * Drawn as stroked geometry, not text. A font would mean either a webfont
+ * dependency for three glyphs or whatever monospace the OS supplies, and
+ * neither gives control over stroke weight, bracket angle, or the balance
+ * against the artwork — at this size a text `</>` reads as a stray character
+ * rather than a mark.
  *
- * Kept deliberately understated: the arms are the artwork, this is the object
- * of their attention.
+ * The opening bracket carries the accent. One coloured element is enough to
+ * make the mark feel authored; colouring all three would turn it into a logo
+ * and pull focus from the arms.
  */
 const CodeSymbol = forwardRef(function CodeSymbol({ layout, className = '' }, ref) {
   return (
-    // Same split as Arm: outer centres it, inner is the animation target.
+    // Same split as Arm: outer positions, inner is the animation target.
     <div
       className={`hero__symbol ${className}`.trim()}
       style={{
@@ -26,18 +27,17 @@ const CodeSymbol = forwardRef(function CodeSymbol({ layout, className = '' }, re
     >
       <div className="hero__symbol-inner" ref={ref}>
         <svg
-          viewBox="0 0 132 72"
+          viewBox="0 0 148 84"
           fill="none"
-          stroke="currentColor"
-          strokeWidth="5"
+          strokeWidth="11"
           strokeLinecap="round"
           strokeLinejoin="round"
           role="img"
           aria-label="code"
         >
-          <polyline points="41,13 12,36 41,59" />
-          <line x1="57" y1="63" x2="75" y2="9" />
-          <polyline points="91,13 120,36 91,59" />
+          <polyline className="hero__symbol-bracket" points="47,17 15,42 47,67" />
+          <line className="hero__symbol-slash" x1="65" y1="72" x2="83" y2="12" />
+          <polyline className="hero__symbol-bracket-close" points="101,17 133,42 101,67" />
         </svg>
       </div>
     </div>

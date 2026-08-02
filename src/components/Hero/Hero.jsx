@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Arm from './Arm.jsx'
 import CodeSymbol from './CodeSymbol.jsx'
+import HeroContent from './HeroContent.jsx'
 import { createHeroAnimation } from './heroAnimation.js'
 import { HERO_LAYOUT, MOBILE_BREAKPOINT, resolveLayout } from './heroConfig.js'
 import { buildSizes } from '../../lib/assets/armAssets.js'
 import { useLoadingManager } from '../../lib/loading/LoadingContext.jsx'
 import './Hero.css'
+import './HeroContent.css'
 
 /**
  * Renaissance arms hero — DOM composition.
@@ -89,6 +91,8 @@ export default function Hero() {
           alt=""
         />
       </div>
+
+      <HeroContent />
     </section>
   )
 }

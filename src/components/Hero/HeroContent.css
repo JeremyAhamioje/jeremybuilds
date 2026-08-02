@@ -1,0 +1,372 @@
+/*
+ * Typographic layer over the artwork.
+ *
+ * A three-row grid that pushes content into the corners the composition leaves
+ * empty, keeping the centre clear for the hands and the code mark.
+ */
+.hero__content {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto 1fr auto;
+  padding: var(--gutter);
+  /* The layer is decorative scaffolding — only its links take the pointer. */
+  pointer-events: none;
+}
+
+.hero__content a {
+  pointer-events: auto;
+}
+
+/* ------------------------------------------------------------------ header */
+
+.site-header {
+  position: relative;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+/*
+ * Soft scrim behind the header. On narrow viewports the arm reaches into the
+ * top-left corner and sits directly under the name; a short gradient holds the
+ * type without moving the artwork or dropping a hard bar across the frame.
+ * Bleeds past the gutter so it fades off-screen rather than ending on an edge.
+ */
+.site-header::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--gutter) * -1);
+  right: calc(var(--gutter) * -1);
+  left: calc(var(--gutter) * -1);
+  bottom: -0.5rem;
+  z-index: -1;
+  background: linear-gradient(
+    to bottom,
+    rgba(10, 9, 8, 0.82) 0%,
+    rgba(10, 9, 8, 0.55) 55%,
+    rgba(10, 9, 8, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.site-header__identity {
+  display: flex;
+  align-items: baseline;
+  gap: clamp(0.6rem, 1.6vw, 1.5rem);
+  min-width: 0;
+}
+
+.site-header__name {
+  font-family: var(--font-serif);
+  font-size: clamp(0.95rem, 1.15vw, 1.15rem);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.site-header__role,
+.site-header__nav {
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.site-header__nav {
+  display: flex;
+  gap: clamp(0.7rem, 1.6vw, 1.4rem);
+  white-space: nowrap;
+  /* Lowercase: the nav is an aside, not an announcement. */
+  text-transform: none;
+  letter-spacing: 0.06em;
+  font-size: clamp(0.72rem, 0.9vw, 0.86rem);
+}
+
+.site-header__nav a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.site-header__nav a:hover,
+.site-header__nav a:focus-visible {
+  color: var(--accent);
+}
+
+/* ----------------------------------------------------------------- eyebrow */
+
+.hero__title {
+  grid-column: 1;
+  grid-row: 3;
+  align-self: end;
+}
+
+.hero__eyebrow {
+  margin: 0 0 clamp(0.1rem, 0.4vh, 0.35rem) 0.08em;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--step-eyebrow);
+  line-height: 1;
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- headline */
+
+.hero__headline {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  font-family: var(--font-display);
+  /* 800 rather than 900: at this size the heaviest cut closes the counters. */
+  font-weight: 800;
+  font-size: var(--step-monument);
+  line-height: 0.8;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.hero__headline-line {
+  display: block;
+}
+
+/* Second line indents, so the block reads as a composition rather than a stack. */
+.hero__headline-line:last-child {
+  margin-left: 0.06em;
+}
+
+/* ------------------------------------------------------------------- intro */
+
+.hero__intro {
+  grid-column: 2;
+  grid-row: 3;
+  align-self: end;
+  justify-self: end;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: clamp(1rem, 2.2vh, 1.8rem);
+  max-width: min(30ch, 100%);
+  text-align: right;
+}
+
+.hero__intro-copy {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--step-body);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.005em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.hero__cta {
+  --cta-padding: clamp(0.55rem, 1vw, 0.8rem) clamp(1.3rem, 2.4vw, 2.1rem);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: var(--cta-padding);
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  transition: color 0.35s ease, border-color 0.35s ease;
+}
+
+/* Wipe fill, rather than a colour swap — quieter and feels considered. */
+.hero__cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.hero__cta span {
+  position: relative;
+}
+
+.hero__cta:hover,
+.hero__cta:focus-visible {
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.hero__cta:hover::before,
+.hero__cta:focus-visible::before {
+  transform: scaleX(1);
+}
+
+/* -------------------------------------------------------------- date badge */
+
+.date-badge {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  align-self: start;
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.4rem, 0.9vw, 0.75rem);
+  margin-top: clamp(1.5rem, 5vh, 3.5rem);
+}
+
+/*
+ * The hairline the numerals sit on, echoing the rule under the header. It runs
+ * out to the left and continues BEHIND the figures rather than stopping at
+ * them — the numerals interrupting a line that carries on is what makes the
+ * badge read as a composed mark instead of a label with a dash next to it.
+ */
+.date-badge::before {
+  content: '';
+  position: absolute;
+  top: 0.44em;
+  right: 22%;
+  width: clamp(6rem, 26vw, 24rem);
+  height: 1px;
+  background: var(--rule);
+}
+
+.date-badge__star {
+  width: clamp(0.85rem, 1.5vw, 1.35rem);
+  height: auto;
+  margin-top: 0.35em;
+  fill: var(--accent);
+  flex-shrink: 0;
+}
+
+/*
+ * The stylised figure. Archivo at the far end of its width axis and near the
+ * top of its weight axis — a genuinely wide, heavy cut. Tight negative
+ * tracking closes the pair so it reads as one mark.
+ */
+.date-badge__figure {
+  /* Positioned so it paints over the hairline that runs behind it. */
+  position: relative;
+  font-family: var(--font-sans);
+  font-variation-settings: 'wdth' 125, 'wght' 900;
+  font-size: var(--step-numeral);
+  line-height: 0.78;
+  letter-spacing: -0.055em;
+  color: var(--ink);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+/*
+ * The slice. A band in the background colour cut straight through the figures
+ * at the point the incoming hairline meets them — so the rule appears to pass
+ * THROUGH the numerals rather than behind them.
+ *
+ * This is what turns a heavy grotesque into a piece of display lettering. The
+ * width axis alone gives weight and width; the cut gives it an idea. Sized in
+ * `em` so it tracks the figure at every breakpoint.
+ */
+.date-badge__figure::after {
+  content: '';
+  position: absolute;
+  top: 0.44em;
+  left: -0.06em;
+  right: -0.06em;
+  height: 0.055em;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+.date-badge__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  padding-top: 0.5em;
+}
+
+.date-badge__month {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(0.95rem, 1.5vw, 1.4rem);
+  line-height: 1;
+  color: var(--ink);
+}
+
+.date-badge__status {
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: 0.09em;
+  color: var(--ink-dim);
+}
+
+/* ------------------------------------------------------------------ mobile */
+
+@media (max-width: 767px) {
+  /*
+   * A single column, read top to bottom: header, date, artwork, headline,
+   * intro. The 1fr row is deliberately empty — it is the window the arms and
+   * the code mark occupy, and giving it a row of its own is what stops the
+   * type ever landing on top of them.
+   */
+  .hero__content {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto auto 1fr auto auto;
+  }
+
+  .site-header__role {
+    display: none;
+  }
+
+  /* Date sits alone under the header — it is a detail, not a headline. */
+  .date-badge {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: end;
+    align-self: start;
+    margin-top: 0.9rem;
+  }
+
+  .date-badge::before {
+    display: none;
+  }
+
+  .hero__title {
+    grid-column: 1;
+    grid-row: 4;
+    align-self: end;
+  }
+
+  .hero__headline {
+    /* Roomier line spacing once the type is only a few characters wide. */
+    line-height: 0.84;
+  }
+
+  /* Intro reads last, left-aligned — right alignment needs width to work. */
+  .hero__intro {
+    grid-column: 1;
+    grid-row: 5;
+    align-self: end;
+    justify-self: start;
+    align-items: flex-start;
+    text-align: left;
+    max-width: 36ch;
+    margin-top: clamp(0.8rem, 2.2vh, 1.4rem);
+    gap: clamp(0.85rem, 2vh, 1.3rem);
+  }
+}

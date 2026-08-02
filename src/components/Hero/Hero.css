@@ -63,8 +63,17 @@
 .hero__symbol {
   position: absolute;
   transform: translate(-50%, -50%);
-  color: #efe9df;
   pointer-events: none;
+}
+
+/* Opening bracket carries the accent; the rest stays marble. */
+.hero__symbol-bracket {
+  stroke: var(--accent);
+}
+
+.hero__symbol-slash,
+.hero__symbol-bracket-close {
+  stroke: var(--ink);
 }
 
 .hero__symbol-inner {
