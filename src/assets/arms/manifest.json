@@ -1,22 +1,26 @@
 {
   "arm-a": {
-    "intrinsicWidth": 872,
-    "intrinsicHeight": 494,
-    "aspectRatio": 1.765182,
+    "intrinsicWidth": 3492,
+    "intrinsicHeight": 1998,
+    "aspectRatio": 1.747748,
     "widths": [
       480,
       720,
-      872
+      1024,
+      1440,
+      1920
     ]
   },
   "arm-b": {
-    "intrinsicWidth": 1008,
-    "intrinsicHeight": 681,
-    "aspectRatio": 1.480176,
+    "intrinsicWidth": 1542,
+    "intrinsicHeight": 1046,
+    "aspectRatio": 1.474187,
     "widths": [
       480,
       720,
-      1008
+      1024,
+      1440,
+      1542
     ]
   }
 }

@@ -8,3 +8,6 @@ dist
 phase*.png
 p1-*.png
 p2-*.png
+
+# Raw downloads (masters live in assets/masters/)
+background-removed*.png

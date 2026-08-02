@@ -67,7 +67,19 @@ const ASSETS = [
  * Target widths. Never upscale — a derivative wider than the master's content
  * is invented detail and pure transfer cost, so the native width is the cap.
  */
-const TARGET_WIDTHS = [480, 720, 1024, 1440]
+const TARGET_WIDTHS = [480, 720, 1024, 1440, 1920]
+
+/**
+ * Second cap, on top of native width.
+ *
+ * The widest the artwork is ever asked to render is a 16" retina laptop:
+ * ~52vw of 1728 CSS px at DPR 2 ~= 1800 device px. arm-a's master is 3492 px
+ * of content, so without this it would emit a ~3500 px derivative nothing can
+ * ever select — megabytes of transfer for zero visible gain. Downscaling from
+ * an oversized master with lanczos also yields a sharper 1920 than a native
+ * 1920 capture would.
+ */
+const MAX_OUTPUT_WIDTH = 1920
 
 const ENCODERS = {
   // Quality tuned to keep fingertip contours and marble gradients clean.
@@ -149,8 +161,10 @@ async function prepare(asset) {
   const adjusted = await sharp(cleaned).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
   const adjustedLuminance = meanLuminance(adjusted.data, adjusted.info.channels)
 
-  // Cap at the trimmed content width: never invent pixels.
-  const widths = [...new Set(TARGET_WIDTHS.filter((w) => w < bounds.width).concat(bounds.width))].sort(
+  // Cap at whichever is smaller: the content width (never invent pixels) or the
+  // largest size anything can actually select.
+  const maxWidth = Math.min(bounds.width, MAX_OUTPUT_WIDTH)
+  const widths = [...new Set(TARGET_WIDTHS.filter((w) => w < maxWidth).concat(maxWidth))].sort(
     (a, b) => a - b,
   )
 
