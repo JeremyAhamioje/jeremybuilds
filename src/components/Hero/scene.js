@@ -1,8 +1,7 @@
 import * as THREE from 'three'
 import { HERO_CONFIG, resolveComposition } from './config.js'
 import { createMaterials } from './materials.js'
-import { createSymbolProxy } from './placeholders.js'
-import { createHand } from './geometry/hand.js'
+import { createPlaceholderSubject } from './subject.js'
 import { disposeObject3D } from '../../lib/disposal.js'
 
 /**
@@ -11,14 +10,20 @@ import { disposeObject3D } from '../../lib/disposal.js'
  * Framework-agnostic on purpose: it takes a DOM element, appends a canvas, and
  * returns a handle with a `dispose()`. Nothing in here knows about React.
  *
+ * This module is deliberately SUBJECT-AGNOSTIC. It owns the renderer, camera,
+ * lighting, background, sizing, render loop and teardown — the parts that hold
+ * regardless of what the hero actually depicts. The visual concept plugs in
+ * through `createSubject`; see subject.js.
+ *
  * @param {HTMLElement} container - element the canvas fills; drives sizing.
+ * @param {object} [options]
+ * @param {Function} [options.createSubject] - returns { slotName: Object3D }.
+ *   Slot names are matched against `composition.slots` in config.js.
  * @returns {object} handle exposing scene objects plus `dispose()`.
  */
-/** Hand-space X the inspect turntable orbits around — roughly the palm centre. */
-const INSPECT_PIVOT_X = 0.75
-
-export function createHeroScene(container) {
-  const { renderer: rendererConfig, background, lighting } = HERO_CONFIG
+export function createHeroScene(container, options = {}) {
+  const { createSubject = createPlaceholderSubject } = options
+  const { renderer: rendererConfig, background, lighting, inspect } = HERO_CONFIG
 
   /* ---------------------------------------------------------------- renderer */
 
@@ -63,45 +68,43 @@ export function createHeroScene(container) {
   const lights = createLighting(lighting)
   lights.forEach((light) => scene.add(light))
 
-  /* ----------------------------------------------------------------- objects */
+  /* ---------------------------------------------------------------- subject */
 
   const materials = createMaterials()
 
-  const handA = createHand(materials.stone)
-  const handB = createHand(materials.stone, { mirror: true })
-  // PHASE 1 leftover — real symbol geometry lands in Phase 4.
-  const symbol = createSymbolProxy(materials.stone)
+  /** @type {Record<string, THREE.Object3D>} */
+  const slots = createSubject({ materials, config: HERO_CONFIG })
 
-  handA.name = 'handA'
-  handB.name = 'handB'
-  symbol.name = 'symbol'
-
-  scene.add(handA, handB, symbol)
+  for (const [name, object] of Object.entries(slots)) {
+    object.name = name
+    scene.add(object)
+  }
 
   /* -------------------------------------------------------- inspection mode */
 
   /**
-   * DEV ONLY — `?inspect=hand&yaw=<deg>&pitch=<deg>` isolates one hand at a
-   * FIXED angle so the silhouette can be judged reproducibly. Angles are
-   * explicit rather than animated: a turntable makes every screenshot a
-   * different view, which is useless for comparing one revision to the next.
+   * DEV ONLY — `?inspect=<slot>&yaw=<deg>&pitch=<deg>&dist=<units>` isolates a
+   * single slot at a FIXED angle so its silhouette can be judged reproducibly.
    *
-   * The hand is offset inside a pivot so rotation orbits the palm rather than
-   * the wrist, keeping the subject centred at every angle.
+   * Angles are explicit rather than animated on purpose: a turntable makes every
+   * screenshot a different view, which is useless for comparing one revision of
+   * the geometry against the next.
    */
   const searchParams = new URLSearchParams(window.location.search)
-  const isInspecting = searchParams.get('inspect') === 'hand'
+  const inspectSlot = searchParams.get('inspect')
+  const isInspecting = Boolean(inspectSlot && slots[inspectSlot])
   const inspectPivot = new THREE.Group()
 
   if (isInspecting) {
-    handB.visible = false
-    symbol.visible = false
+    for (const [name, object] of Object.entries(slots)) {
+      object.visible = name === inspectSlot
+    }
 
     inspectPivot.rotation.y = THREE.MathUtils.degToRad(Number(searchParams.get('yaw') ?? 0))
     inspectPivot.rotation.x = THREE.MathUtils.degToRad(Number(searchParams.get('pitch') ?? 0))
 
     scene.add(inspectPivot)
-    inspectPivot.add(handA)
+    inspectPivot.add(slots[inspectSlot])
   }
 
   /* ------------------------------------------------------------- composition */
@@ -110,7 +113,7 @@ export function createHeroScene(container) {
   let activeComposition = null
 
   /**
-   * Apply the breakpoint-appropriate composition to camera and objects.
+   * Apply the breakpoint-appropriate composition to camera and subject slots.
    *
    * The resolved transform is also stashed on each object's `userData.base`.
    * Scroll animation reads from that base rather than from the object's live
@@ -135,17 +138,19 @@ export function createHeroScene(container) {
       fov: cameraConfig.fov,
     }
 
-    applyTransform(handA, composition.handA)
-    applyTransform(handB, composition.handB)
-    applyTransform(symbol, composition.symbol)
+    for (const [name, object] of Object.entries(slots)) {
+      const transform = composition.slots[name]
+      if (transform) applyTransform(object, transform)
+    }
 
     if (isInspecting) {
-      // Shift the hand back inside the pivot so the palm, not the wrist, sits
-      // at the centre of rotation.
-      handA.position.set(-INSPECT_PIVOT_X, 0, 0)
-      handA.rotation.set(0, 0, 0)
-      handA.scale.setScalar(1)
-      camera.position.set(0, 0.15, Number(searchParams.get('dist') ?? 7))
+      // Offset the subject inside the pivot so rotation orbits its visual
+      // centre rather than its origin, keeping it framed at every angle.
+      const subject = slots[inspectSlot]
+      subject.position.set(-inspect.pivotX, 0, 0)
+      subject.rotation.set(0, 0, 0)
+      subject.scale.setScalar(1)
+      camera.position.set(0, 0.15, Number(searchParams.get('dist') ?? inspect.distance))
       camera.lookAt(0, 0, 0)
       camera.updateProjectionMatrix()
     }
@@ -174,7 +179,7 @@ export function createHeroScene(container) {
   /* -------------------------------------------------------------- render loop */
 
   const clock = new THREE.Clock()
-  /** Per-frame hook for later phases (scroll-driven motion, symbol reaction). */
+  /** Per-frame hook for scroll-driven motion and subject reactions. */
   let onFrame = null
 
   function renderFrame() {
@@ -214,9 +219,7 @@ export function createHeroScene(container) {
     scene,
     camera,
     renderer,
-    handA,
-    handB,
-    symbol,
+    slots,
     materials,
     getComposition: () => activeComposition,
     setFrameCallback: (callback) => {
@@ -229,8 +232,8 @@ export function createHeroScene(container) {
 /**
  * Copy a config transform onto an object and record it as the animation base.
  *
- * Transforms are partial by design — the symbol, for instance, has no authored
- * rotation — so anything omitted falls back to identity.
+ * Transforms are partial by design — a slot may have no authored rotation — so
+ * anything omitted falls back to identity.
  */
 function applyTransform(object, transform) {
   const position = transform.position ?? [0, 0, 0]

@@ -1,16 +1,18 @@
 import { useEffect, useRef } from 'react'
 import { createHeroScene } from './scene.js'
-import './RenaissanceHandsHero.css'
+import './Hero.css'
 
 /**
- * Renaissance Hands hero.
+ * Scroll-driven 3D hero.
  *
  * React's only job here is owning the mount point and the scene's lifecycle.
  * Every animated value lives in Three.js objects mutated imperatively — no
- * component state is touched per frame, so scroll animation never triggers a
- * React render.
+ * component state is touched per frame, so animation never triggers a render.
+ *
+ * The visual concept is supplied by a subject factory. To swap directions, pass
+ * one as `createSubject` in the createHeroScene call below — see subject.js.
  */
-export default function RenaissanceHandsHero() {
+export default function Hero() {
   const containerRef = useRef(null)
   const sceneRef = useRef(null)
 

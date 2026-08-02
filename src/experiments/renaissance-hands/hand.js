@@ -2,8 +2,8 @@ import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
 import { createDigit } from './digit.js'
 import { createPalm } from './palm.js'
-import { createSeededRandom } from './loft.js'
-import { HAND_CONFIG } from '../handConfig.js'
+import { createSeededRandom } from '../../lib/procedural/loft.js'
+import { HAND_CONFIG } from './handConfig.js'
 
 /**
  * Assemble a complete Renaissance hand.

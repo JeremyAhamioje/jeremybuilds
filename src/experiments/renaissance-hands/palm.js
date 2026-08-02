@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { buildLoftGeometry, createRing, sampleProfile, smoothBump } from './loft.js'
+import { buildLoftGeometry, createRing, sampleProfile, smoothBump } from '../../lib/procedural/loft.js'
 
 /**
  * Palm, wrist and forearm as ONE continuous loft.

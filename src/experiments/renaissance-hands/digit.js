@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js'
-import { buildLoftGeometry, createRing, smoothBump } from './loft.js'
+import { buildLoftGeometry, createRing, smoothBump } from '../../lib/procedural/loft.js'
 
 /**
  * Articulated digit construction (fingers and thumb).

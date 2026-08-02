@@ -98,20 +98,27 @@ export const HERO_CONFIG = {
         position: [0, 0.15, 9.2],
         lookAt: [0, 0.0, 0],
       },
-      // Upper-left reaching down-right, lower-right reaching up-left.
-      handA: {
-        position: [-3.5, 0.95, 0.1],
-        rotation: [0, 0, -0.2],
-        scale: 1.0,
-      },
-      handB: {
-        position: [3.5, -1.0, -0.1],
-        rotation: [0, Math.PI, 0.2],
-        scale: 0.96,
-      },
-      symbol: {
-        position: [0, 0, 0.3],
-        scale: 1.0,
+      /**
+       * Slot names must match the keys returned by the subject factory in
+       * subject.js. Add, remove or rename freely — just keep the two in step.
+       */
+      slots: {
+        // Opposing masses entering from the frame edges, converging on a
+        // centrepiece, with large negative space between them.
+        subjectA: {
+          position: [-3.5, 0.95, 0.1],
+          rotation: [0, 0, -0.2],
+          scale: 1.0,
+        },
+        subjectB: {
+          position: [3.5, -1.0, -0.1],
+          rotation: [0, Math.PI, 0.2],
+          scale: 0.96,
+        },
+        focus: {
+          position: [0, 0, 0.3],
+          scale: 1.0,
+        },
       },
     },
 
@@ -123,19 +130,22 @@ export const HERO_CONFIG = {
         position: [0, 0.1, 10.5],
         lookAt: [0, 0.0, 0],
       },
-      handA: {
-        position: [-0.95, 2.5, 0.1],
-        rotation: [0, 0, -0.55],
-        scale: 0.78,
-      },
-      handB: {
-        position: [0.95, -2.5, -0.1],
-        rotation: [0, Math.PI, 0.55],
-        scale: 0.75,
-      },
-      symbol: {
-        position: [0, 0, 0.3],
-        scale: 0.85,
+      // Deliberately re-composed on a vertical diagonal, not a shrunken desktop.
+      slots: {
+        subjectA: {
+          position: [-0.95, 2.5, 0.1],
+          rotation: [0, 0, -0.55],
+          scale: 0.78,
+        },
+        subjectB: {
+          position: [0.95, -2.5, -0.1],
+          rotation: [0, Math.PI, 0.55],
+          scale: 0.75,
+        },
+        focus: {
+          position: [0, 0, 0.3],
+          scale: 0.85,
+        },
       },
     },
   },
@@ -145,11 +155,18 @@ export const HERO_CONFIG = {
    * Tunable — these are art direction, not load-bearing constants.
    */
   animation: {
-    approachStart: 0.18, // hands begin moving inward
-    approachEnd: 0.55, // fingertips near the symbol
+    approachStart: 0.18, // subjects begin moving inward
+    approachEnd: 0.55, // subjects near the focus
     contactPoint: 0.7, // convergence moment
-    exitStart: 0.78, // hands push past the composition
-    exitEnd: 1.0, // hands have left the frame
+    exitStart: 0.78, // subjects push past the composition
+    exitEnd: 1.0, // subjects have left the frame
+  },
+
+  /** Dev-only inspection view (`?inspect=<slot>`). Not used by the hero. */
+  inspect: {
+    /** Local X the pivot orbits around — offset to the subject's visual centre. */
+    pivotX: 0.75,
+    distance: 7,
   },
 }
 

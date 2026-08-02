@@ -1,4 +1,4 @@
-import RenaissanceHandsHero from './components/RenaissanceHandsHero/RenaissanceHandsHero.jsx'
+import Hero from './components/Hero/Hero.jsx'
 
 /**
  * Minimal test harness for the hero experiment.
@@ -10,7 +10,7 @@ export default function App() {
   return (
     <main>
       <section className="hero">
-        <RenaissanceHandsHero />
+        <Hero />
       </section>
 
       {/* Placeholder for whatever follows the hero — proves the exit lands somewhere. */}
