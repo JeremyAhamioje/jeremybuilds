@@ -1,0 +1,37 @@
+:root {
+  font-family: system-ui, -apple-system, sans-serif;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+html,
+body {
+  background: #0a0908;
+  color: #e6e0d6;
+}
+
+body {
+  min-height: 100vh;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  /* svh avoids the mobile URL-bar resize jump that vh causes. */
+  height: 100svh;
+}
+
+.next-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100svh;
+  color: #5c564d;
+  font-size: 0.8rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}

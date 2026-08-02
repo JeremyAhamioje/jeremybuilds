@@ -1,0 +1,34 @@
+.hero-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #0a0908;
+}
+
+.hero-stage__canvas {
+  position: absolute;
+  inset: 0;
+}
+
+/*
+ * Vignette + a faint pool of light behind the composition. Doing this in CSS
+ * keeps the render pipeline free of a postprocessing pass for what is,
+ * visually, a flat 2D gradient.
+ */
+.hero-stage__vignette {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      ellipse 65% 55% at 50% 48%,
+      rgba(255, 244, 226, 0.05) 0%,
+      rgba(10, 9, 8, 0) 55%
+    ),
+    radial-gradient(
+      ellipse 90% 80% at 50% 50%,
+      rgba(10, 9, 8, 0) 45%,
+      rgba(6, 5, 5, 0.55) 100%
+    );
+}
