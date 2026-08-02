@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { HERO_CONFIG } from './config.js'
+import { HERO_CONFIG } from './sceneConfig.js'
 
 /**
  * Material library for the hero.

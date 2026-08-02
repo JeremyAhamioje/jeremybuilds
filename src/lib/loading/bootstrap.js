@@ -1,16 +1,35 @@
 /**
- * Registers the shell's genuinely-real critical work.
+ * Declares every piece of critical work, up front.
  *
- * Everything here corresponds to something the browser actually has to finish
- * before the hero can be shown. Hero assets are NOT registered here — the hero
- * registers its own in Phase 2, which is exactly the extensibility the loading
- * architecture exists to provide.
- */
-
-/**
+ * The full critical set is declared here rather than letting components
+ * register themselves as they mount. Late registration works — progress is
+ * monotonic and would not run backwards — but it makes the bar's meaning depend
+ * on React's effect ordering: if the shell's own tasks settled before the hero
+ * mounted, critical progress would already read 100% while the artwork was
+ * still downloading. A declared manifest keeps the percentage honest.
+ *
+ * Components still own their own COMPLETION. The hero calls completeTask once
+ * each image has genuinely decoded; if the hero never mounts, the timeout
+ * catches it. Background (non-critical) work can still register dynamically.
+ *
  * @param {ReturnType<import('./LoadingManager.js').createLoadingManager>} manager
  */
-export function registerShellTasks(manager) {
+export function registerCriticalTasks(manager) {
+  registerShellTasks(manager)
+  registerHeroAssetTasks(manager)
+}
+
+/**
+ * The two arm images. Weighted well above the shell tasks because they are the
+ * actual transfer cost — a font check settling instantly should not imply the
+ * artwork is a third of the way there.
+ */
+function registerHeroAssetTasks(manager) {
+  manager.registerTask({ id: 'arm-b', label: 'artwork', weight: 5 })
+  manager.registerTask({ id: 'arm-a', label: 'artwork', weight: 5 })
+}
+
+function registerShellTasks(manager) {
   // Web fonts. `document.fonts.ready` settles once font loading is done, so
   // this is real work — and it prevents a text reflow during the reveal.
   manager.run(

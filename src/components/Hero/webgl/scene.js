@@ -1,8 +1,8 @@
 import * as THREE from 'three'
-import { HERO_CONFIG, resolveComposition } from './config.js'
+import { HERO_CONFIG, resolveComposition } from './sceneConfig.js'
 import { createMaterials } from './materials.js'
 import { createPlaceholderSubject } from './subject.js'
-import { disposeObject3D } from '../../lib/disposal.js'
+import { disposeObject3D } from '../../../lib/disposal.js'
 
 /**
  * Builds the hero's Three.js scene and owns its whole lifecycle.

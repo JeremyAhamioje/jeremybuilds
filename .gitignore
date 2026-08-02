@@ -6,3 +6,5 @@ dist
 # Playwright verification artifacts (screenshots, console logs)
 .playwright-mcp
 phase*.png
+p1-*.png
+p2-*.png

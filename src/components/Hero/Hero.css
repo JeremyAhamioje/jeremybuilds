@@ -1,34 +1,74 @@
-.hero-stage {
+.hero__stage {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
   background: #0a0908;
-}
-
-.hero-stage__canvas {
-  position: absolute;
-  inset: 0;
+  /* Self-contained stacking context for arm/symbol depth ordering. */
+  isolation: isolate;
 }
 
 /*
- * Vignette + a faint pool of light behind the composition. Doing this in CSS
- * keeps the render pipeline free of a postprocessing pass for what is,
- * visually, a flat 2D gradient.
+ * A faint pool of light behind the composition. Cheap, and it stops the
+ * near-black field reading as a flat void.
  */
-.hero-stage__vignette {
+.hero__stage::before {
+  content: '';
   position: absolute;
   inset: 0;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 58% 48% at 50% 50%,
+    rgba(255, 244, 226, 0.055) 0%,
+    rgba(10, 9, 8, 0) 62%
+  );
   pointer-events: none;
-  background:
-    radial-gradient(
-      ellipse 65% 55% at 50% 48%,
-      rgba(255, 244, 226, 0.05) 0%,
-      rgba(10, 9, 8, 0) 55%
-    ),
-    radial-gradient(
-      ellipse 90% 80% at 50% 50%,
-      rgba(10, 9, 8, 0) 45%,
-      rgba(6, 5, 5, 0.55) 100%
-    );
+}
+
+.hero__arm {
+  position: absolute;
+  /*
+   * Anchored on the hand: the element is placed at its configured point, then
+   * pulled back by the anchor offset so the FINGERTIPS land there rather than
+   * the image's top-left corner.
+   */
+  transform: translate(var(--arm-anchor-x), var(--arm-anchor-y))
+    rotate(var(--arm-rotate, 0deg));
+  will-change: transform;
+}
+
+.hero__arm img {
+  display: block;
+  width: 100%;
+  height: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.hero__symbol {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  color: #efe9df;
+  will-change: transform;
+  pointer-events: none;
+}
+
+.hero__symbol svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Vignette sits above the artwork, below any future UI. */
+.hero__vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse 92% 84% at 50% 50%,
+    rgba(10, 9, 8, 0) 46%,
+    rgba(5, 4, 4, 0.62) 100%
+  );
 }

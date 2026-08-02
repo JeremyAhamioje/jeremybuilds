@@ -3,7 +3,7 @@ import Hero from './components/Hero/Hero.jsx'
 import Preloader from './components/Preloader/Preloader.jsx'
 import { PRELOADER_CONFIG } from './components/Preloader/preloaderConfig.js'
 import { LoadingProvider, useLoadingManager } from './lib/loading/LoadingContext.jsx'
-import { registerShellTasks } from './lib/loading/bootstrap.js'
+import { registerCriticalTasks } from './lib/loading/bootstrap.js'
 
 /**
  * Minimal test harness for the hero experiment.
@@ -32,7 +32,7 @@ function AppShell() {
   const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
-    registerShellTasks(manager)
+    registerCriticalTasks(manager)
     manager.start()
   }, [manager])
 
