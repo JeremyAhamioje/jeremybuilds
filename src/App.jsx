@@ -46,9 +46,7 @@ function AppShell() {
         inert keeps it out of the tab order while the preloader is up.
       */}
       <main className="app" inert={revealed ? undefined : ''}>
-        <section className="hero">
-          <Hero />
-        </section>
+        <Hero />
 
         {/* Placeholder for whatever follows — proves the hero's exit lands somewhere. */}
         <section className="next-section">

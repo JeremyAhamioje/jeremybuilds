@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import Arm from './Arm.jsx'
 import CodeSymbol from './CodeSymbol.jsx'
+import { createHeroAnimation } from './heroAnimation.js'
 import { HERO_LAYOUT, MOBILE_BREAKPOINT, resolveLayout } from './heroConfig.js'
 import { buildSizes } from '../../lib/assets/armAssets.js'
 import { useLoadingManager } from '../../lib/loading/LoadingContext.jsx'
@@ -21,7 +22,7 @@ export default function Hero() {
   const manager = useLoadingManager()
   const layout = useResponsiveLayout()
 
-  const stageRef = useRef(null)
+  const sectionRef = useRef(null)
   const armARef = useRef(null)
   const armBRef = useRef(null)
   const symbolRef = useRef(null)
@@ -35,6 +36,22 @@ export default function Hero() {
     manager.startTask('arm-b')
   }, [manager])
 
+  /*
+   * Build the scroll sequence after layout, before paint, so the pin spacer is
+   * in place on the first frame the visitor sees. gsap.matchMedia handles the
+   * breakpoint swap and reverts everything it created on cleanup.
+   */
+  useLayoutEffect(
+    () =>
+      createHeroAnimation({
+        section: sectionRef.current,
+        armA: armARef.current,
+        armB: armBRef.current,
+        symbol: symbolRef.current,
+      }),
+    [],
+  )
+
   // Per-arm `sizes`: the two arms render at different widths, and describing
   // both with one string makes the browser pick the wrong file for whichever
   // arm is wider. Derived from the layout so it cannot drift from it.
@@ -46,29 +63,33 @@ export default function Hero() {
     )
 
   return (
-    <div className="hero__stage" ref={stageRef}>
-      <Arm
-        ref={armBRef}
-        assetId="arm-b"
-        layout={layout.current.armB}
-        sizes={sizesFor('armB')}
-        onReady={completeArm('arm-b')}
-        onFail={failArm('arm-b')}
-        alt="A sculpted arm reaching outward, after Michelangelo's Creation of Adam"
-      />
+    // The section is the pin target, so the hero owns its own scroll behaviour
+    // rather than depending on a wrapper the page happens to provide.
+    <section className="hero" ref={sectionRef}>
+      <div className="hero__stage">
+        <Arm
+          ref={armBRef}
+          assetId="arm-b"
+          layout={layout.current.armB}
+          sizes={sizesFor('armB')}
+          onReady={completeArm('arm-b')}
+          onFail={failArm('arm-b')}
+          alt="A sculpted arm reaching outward, after Michelangelo's Creation of Adam"
+        />
 
-      <CodeSymbol ref={symbolRef} layout={layout.current.symbol} />
+        <CodeSymbol ref={symbolRef} layout={layout.current.symbol} />
 
-      <Arm
-        ref={armARef}
-        assetId="arm-a"
-        layout={layout.current.armA}
-        sizes={sizesFor('armA')}
-        onReady={completeArm('arm-a')}
-        onFail={failArm('arm-a')}
-        alt=""
-      />
-    </div>
+        <Arm
+          ref={armARef}
+          assetId="arm-a"
+          layout={layout.current.armA}
+          sizes={sizesFor('armA')}
+          onReady={completeArm('arm-a')}
+          onFail={failArm('arm-a')}
+          alt=""
+        />
+      </div>
+    </section>
   )
 }
 

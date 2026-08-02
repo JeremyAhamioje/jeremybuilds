@@ -18,13 +18,6 @@ body {
   min-height: 100vh;
 }
 
-.hero {
-  position: relative;
-  width: 100%;
-  /* svh avoids the mobile URL-bar resize jump that vh causes. */
-  height: 100svh;
-}
-
 .next-section {
   display: flex;
   align-items: center;

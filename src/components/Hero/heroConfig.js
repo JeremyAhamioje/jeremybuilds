@@ -96,3 +96,59 @@ export const HERO_LAYOUT = {
 export function resolveLayout(width) {
   return width < MOBILE_BREAKPOINT ? HERO_LAYOUT.mobile : HERO_LAYOUT.desktop
 }
+
+/**
+ * HERO_MOTION — the scroll sequence.
+ *
+ * A micro animation, not a set piece. The arms begin further out, with roughly
+ * a fifth of each one still outside the frame, and glide in until the
+ * fingertips meet the `</>`. That arrival IS the ending — there is no exit
+ * choreography. The hero simply unpins and the page carries on.
+ *
+ *   0.00  arms held back, partly out of frame
+ *   0.86  fingertips have arrived at the symbol
+ *   0.90  the symbol acknowledges it
+ *   1.00  settled; hero releases
+ *
+ * HERO_LAYOUT is the DESTINATION, not the starting pose: the composed layout is
+ * where the motion lands. `from` below is an offset back along each arm's line
+ * of travel, so the composition tuned by eye is exactly what the visitor ends
+ * on, and the animation cannot drift it.
+ */
+export const HERO_MOTION = {
+  /**
+   * Pin length as a multiple of viewport height. Short, because the payload is
+   * small — a long pin for a subtle move just feels like the page has stalled.
+   */
+  scrollDistance: 1.15,
+
+  /**
+   * Scrub smoothing, in seconds of catch-up. Not a delay on the scroll itself —
+   * the page still scrolls natively; this only eases the artwork toward the
+   * position scroll has already reached, which removes wheel-step jitter.
+   */
+  scrub: 0.8,
+
+  keyframes: {
+    entryEnd: 0.86,
+    contact: 0.9,
+  },
+
+  desktop: {
+    /**
+     * Offsets are a fraction of each arm's own rendered width (52vw and 50vw),
+     * so "held back by 20%" means the same thing on any monitor. Pulled back
+     * along the diagonal each arm travels: armB up-left, armA down-right.
+     */
+    armB: { from: { x: -10.4, y: -3.4, rotate: -0.7, scale: 0.985 } },
+    armA: { from: { x: 10, y: 3.2, rotate: 0.7, scale: 0.985 } },
+    symbol: { fromScale: 0.9, contactScale: 1.12 },
+  },
+
+  mobile: {
+    // Vertical diagonal, so the arms are held back mostly in y.
+    armB: { from: { x: -4, y: -13, rotate: -1.2, scale: 0.985 } },
+    armA: { from: { x: 4, y: 13, rotate: 1.2, scale: 0.985 } },
+    symbol: { fromScale: 0.9, contactScale: 1.12 },
+  },
+}

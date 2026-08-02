@@ -67,43 +67,51 @@ const Arm = forwardRef(function Arm(
 
   if (!asset) return null
 
+  const origin = `${anchor.x * 100}% ${anchor.y * 100}%`
+
   return (
+    /*
+     * Two nodes on purpose. The outer owns LAYOUT — where the arm sits and the
+     * anchor shift that puts the fingertips there. The inner is the ANIMATION
+     * target and nothing else touches its transform. One element carrying both
+     * would mean GSAP parsing and overwriting the CSS transform, which loses
+     * the anchor the moment the sequence starts.
+     */
     <div
-      ref={ref}
       className="hero__arm"
       style={{
         left: `${layout.x}%`,
         top: `${layout.y}%`,
         width: `${layout.width}%`,
         zIndex: layout.depth,
-        // Shift so the configured point lands on the hand, then apply the
-        // baseline rotation about that same point.
         '--arm-anchor-x': `${-anchor.x * 100}%`,
         '--arm-anchor-y': `${-anchor.y * 100}%`,
         '--arm-rotate': `${layout.rotate}deg`,
-        transformOrigin: `${anchor.x * 100}% ${anchor.y * 100}%`,
+        transformOrigin: origin,
       }}
     >
-      <picture>
-        {asset.sources.map((source) => (
-          <source key={source.type} type={source.type} srcSet={source.srcSet} sizes={sizes} />
-        ))}
-        <img
-          ref={imgRef}
-          src={asset.fallback}
-          sizes={sizes}
-          width={asset.width}
-          height={asset.height}
-          alt={alt}
-          decoding="async"
-          // The hero is the LCP element — never lazy, and fetched at high priority.
-          loading="eager"
-          // Lowercase: React 18 passes unknown attributes through verbatim, and
-          // only React 19 maps the camelCase `fetchPriority` prop.
-          fetchpriority="high"
-          draggable="false"
-        />
-      </picture>
+      <div className="hero__arm-inner" ref={ref} style={{ transformOrigin: origin }}>
+        <picture>
+          {asset.sources.map((source) => (
+            <source key={source.type} type={source.type} srcSet={source.srcSet} sizes={sizes} />
+          ))}
+          <img
+            ref={imgRef}
+            src={asset.fallback}
+            sizes={sizes}
+            width={asset.width}
+            height={asset.height}
+            alt={alt}
+            decoding="async"
+            // The hero is the LCP element — never lazy, and fetched at high priority.
+            loading="eager"
+            // Lowercase: React 18 passes unknown attributes through verbatim, and
+            // only React 19 maps the camelCase `fetchPriority` prop.
+            fetchpriority="high"
+            draggable="false"
+          />
+        </picture>
+      </div>
     </div>
   )
 })

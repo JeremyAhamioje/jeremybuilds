@@ -1,7 +1,18 @@
-.hero__stage {
+/*
+ * The pinned element. ScrollTrigger takes this out of flow and inserts a
+ * spacer of equal height, so the surrounding page layout is unaffected.
+ * `svh` avoids the mobile URL-bar resize jump that `vh` causes.
+ */
+.hero {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.hero__stage {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   background: #0a0908;
   /* Self-contained stacking context for arm/symbol depth ordering. */
@@ -25,15 +36,19 @@
   pointer-events: none;
 }
 
+/*
+ * LAYOUT node. Owns position and the anchor shift that puts the FINGERTIPS at
+ * the configured point rather than the image's top-left corner. Its transform
+ * is static; the scroll sequence never touches it.
+ */
 .hero__arm {
   position: absolute;
-  /*
-   * Anchored on the hand: the element is placed at its configured point, then
-   * pulled back by the anchor offset so the FINGERTIPS land there rather than
-   * the image's top-left corner.
-   */
   transform: translate(var(--arm-anchor-x), var(--arm-anchor-y))
     rotate(var(--arm-rotate, 0deg));
+}
+
+/* ANIMATION node. GSAP owns this transform outright. */
+.hero__arm-inner {
   will-change: transform;
 }
 
@@ -49,8 +64,11 @@
   position: absolute;
   transform: translate(-50%, -50%);
   color: #efe9df;
-  will-change: transform;
   pointer-events: none;
+}
+
+.hero__symbol-inner {
+  will-change: transform, opacity;
 }
 
 .hero__symbol svg {
