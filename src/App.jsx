@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Hero from './components/Hero/Hero.jsx'
 import About from './components/About/About.jsx'
+import Services from './components/Services/Services.jsx'
 import Projects from './components/Projects/Projects.jsx'
 import Tools from './components/Tools/Tools.jsx'
 import Preloader from './components/Preloader/Preloader.jsx'
@@ -50,6 +51,13 @@ function AppShell() {
       */}
       <main className="app" inert={revealed ? undefined : ''}>
         <Hero />
+
+        {/*
+          Before the work, not after it. Services state the offer; the projects
+          then answer it. Reversed, this would be a recap of what the visitor
+          just scrolled past.
+        */}
+        <Services />
 
         <Projects />
 

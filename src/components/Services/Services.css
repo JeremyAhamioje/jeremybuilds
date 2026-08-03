@@ -1,0 +1,289 @@
+/*
+ * Services.
+ *
+ * Dark, like the hero and the tool stack. It sits between the hero and the
+ * paper of the work section, so the page reads dark -> dark -> paper rather
+ * than alternating every screen.
+ */
+.services {
+  position: relative;
+  padding: clamp(4.5rem, 12vh, 9rem) var(--gutter) clamp(3rem, 8vh, 6rem);
+  background: var(--bg);
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------- head */
+
+.services__head {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.7rem, 1.6vw, 1.1rem);
+  max-width: 88rem;
+  margin: 0 auto clamp(3rem, 9vh, 6rem);
+}
+
+.services__star {
+  width: clamp(1.6rem, 2.6vw, 2.4rem);
+  height: auto;
+  flex: none;
+  fill: var(--accent);
+}
+
+.services__eyebrow {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.9vw, 1.6rem);
+  font-variation-settings: 'wght' 700, 'wdth' 112;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------------------------ rows */
+
+.services__list {
+  max-width: 88rem;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+.service {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+}
+
+/*
+ * Rows overlap slightly and alternate sides. The overlap is what stops six
+ * rows reading as a table — in the reference the artwork of one row rises past
+ * the baseline of the one above it.
+ */
+.service + .service {
+  margin-top: clamp(-2rem, -3vw, -1rem);
+}
+
+.service[data-side='text-right'] .service__copy {
+  order: 2;
+}
+
+/* Nudged out of lockstep so the eye travels diagonally down the column. */
+.service[data-side='text-right'] .service__stage {
+  transform: translateY(clamp(-3rem, -4vw, -1.5rem));
+}
+
+/* ------------------------------------------------------------------ copy */
+
+.service__copy {
+  position: relative;
+  z-index: 2;
+}
+
+.service__number {
+  margin: 0 0 0.4em;
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  font-variation-settings: 'wght' 600;
+  letter-spacing: 0.24em;
+  color: var(--accent);
+}
+
+/*
+ * The condensed display face, run as wide as the column allows. Big Shoulders
+ * at a narrow width axis is what carries the reference's look — the letters
+ * are tall and tightly packed rather than a normal face squeezed, which is the
+ * difference between display type and stretched type.
+ */
+.service__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 7vw, 6.2rem);
+  font-weight: 800;
+  line-height: 0.86;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  font-variation-settings: 'wdth' 88;
+  text-wrap: balance;
+}
+
+.service__blurb {
+  max-width: 34ch;
+  margin: clamp(0.7rem, 1.6vh, 1.1rem) 0 0;
+  font-family: var(--font-sans);
+  font-size: var(--step-body);
+  line-height: 1.5;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+/* ----------------------------------------------------------------- stage */
+
+.service__stage {
+  position: relative;
+  padding: clamp(1rem, 3vw, 2.4rem);
+}
+
+.service__art {
+  display: block;
+  width: 100%;
+  height: auto;
+  /* Strokes sit right on the edge of the viewBox in places. */
+  overflow: visible;
+}
+
+/* ------------------------------------------------------- illustration kit
+ *
+ * Every drawing pulls its weight and colour from here, so the whole set can be
+ * retuned in one place instead of across six components. Nothing in
+ * ServiceArt.jsx carries an inline fill or stroke.
+ */
+
+.art-panel {
+  fill: rgba(239, 233, 223, 0.04);
+  stroke: rgba(239, 233, 223, 0.55);
+  stroke-width: 1.6;
+}
+
+.art-hollow {
+  fill: none;
+  stroke: rgba(239, 233, 223, 0.3);
+  stroke-width: 1.6;
+}
+
+.art-line {
+  fill: none;
+  stroke: rgba(239, 233, 223, 0.26);
+  stroke-width: 1.6;
+}
+
+.art-line-strong {
+  fill: none;
+  stroke: rgba(239, 233, 223, 0.62);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.art-faint {
+  fill: none;
+  stroke: rgba(239, 233, 223, 0.16);
+  stroke-width: 1.4;
+}
+
+.art-ghost {
+  fill: none;
+  stroke: rgba(239, 233, 223, 0.09);
+  stroke-width: 1.4;
+}
+
+.art-fill {
+  fill: rgba(239, 233, 223, 0.62);
+}
+
+.art-fill-soft {
+  fill: rgba(239, 233, 223, 0.13);
+}
+
+.art-dim {
+  fill: rgba(239, 233, 223, 0.24);
+}
+
+/* The single accent per drawing. */
+.art-accent {
+  fill: var(--accent);
+}
+
+.art-accent-stroke {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.4;
+  stroke-linecap: round;
+}
+
+/*
+ * Travelling highlights. Hidden by default: the dash pattern is written by the
+ * timeline, and without this they would render as solid accent lines on first
+ * paint and stay that way with motion reduced — which would wreck the drawing
+ * exactly where it needs to survive on its own.
+ */
+.art-comet {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-dasharray: 0 9999;
+}
+
+.art-dash {
+  fill: none;
+  stroke: rgba(239, 233, 223, 0.22);
+  stroke-width: 1.4;
+  stroke-dasharray: 5 4;
+}
+
+.art-guide {
+  stroke: var(--accent);
+  stroke-width: 1.2;
+  opacity: 0.7;
+}
+
+.art-orbit {
+  fill: none;
+  stroke: rgba(239, 233, 223, 0.15);
+  stroke-width: 1.4;
+  stroke-dasharray: 2 6;
+}
+
+.art-ring {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.4;
+  stroke-dasharray: 42 60;
+  stroke-linecap: round;
+}
+
+.art-track {
+  fill: none;
+  stroke: rgba(239, 233, 223, 0.14);
+  stroke-width: 1.4;
+  stroke-dasharray: 3 5;
+}
+
+.art-cursor {
+  fill: var(--ink);
+}
+
+/* --------------------------------------------------------------- compact */
+
+@media (max-width: 860px) {
+  /*
+   * Single column, artwork above its own heading. The alternating sides and
+   * the overlap both depend on there being two columns to alternate between,
+   * so they are dropped rather than approximated.
+   */
+  .service {
+    grid-template-columns: 1fr;
+    gap: clamp(0.8rem, 3vw, 1.4rem);
+  }
+
+  .service + .service {
+    margin-top: clamp(2.5rem, 8vh, 4rem);
+  }
+
+  .service__copy,
+  .service[data-side='text-right'] .service__copy {
+    order: 2;
+  }
+
+  .service[data-side='text-right'] .service__stage {
+    transform: none;
+  }
+
+  .service__stage {
+    padding: 0;
+  }
+
+  .service__title {
+    font-size: clamp(2.4rem, 12vw, 4rem);
+  }
+}

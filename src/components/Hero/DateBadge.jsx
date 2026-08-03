@@ -1,27 +1,5 @@
 import { useCurrentDate } from '../../lib/useCurrentDate.js'
-
-/**
- * Eight-point burst, generated rather than hand-plotted so the geometry is
- * exact and the spike ratio stays tunable. A small inner radius is what makes
- * it read as a sparkle instead of a cog.
- */
-const STAR_PATH = (() => {
-  const points = 8
-  const outer = 12
-  const inner = 3.4
-  const centre = 12
-  const coords = []
-
-  for (let i = 0; i < points * 2; i += 1) {
-    const radius = i % 2 === 0 ? outer : inner
-    const angle = (Math.PI * i) / points - Math.PI / 2
-    coords.push(
-      `${(centre + radius * Math.cos(angle)).toFixed(2)},${(centre + radius * Math.sin(angle)).toFixed(2)}`,
-    )
-  }
-
-  return `M${coords.join('L')}Z`
-})()
+import { STAR_PATH } from '../../lib/starPath.js'
 
 /**
  * The live date mark.
