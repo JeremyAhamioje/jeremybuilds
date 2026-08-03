@@ -8,11 +8,10 @@ import './Services.css'
 /**
  * Services.
  *
- * Sits before the work, not after it. The work proves capability but cannot
- * state the offer, and twenty projects spanning e-commerce, AI, 3D and Figma
- * proposals read as unfocused until something up front says what the through
- * line is. After the work this would be a recap; before it, it is the claim
- * the work then answers.
+ * Sits after About, so the page runs: proof (the work), person (the resume),
+ * then offer. That ordering asks the visitor to be convinced before being
+ * sold to, which is the right way round for a portfolio whose case is the
+ * work itself.
  *
  * Rows alternate side to side and are nudged vertically out of lockstep, so
  * the column reads as a composition rather than a table of six things.

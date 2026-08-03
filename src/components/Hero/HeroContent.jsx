@@ -46,7 +46,7 @@ export default function HeroContent() {
       <div className="hero__intro">
         <p className="hero__intro-copy">
           I build interactive experiences for the web, where interface, motion and code
-          meet. I care about craft, typography, and the details most people only feel.
+          meet. I care about craft, typography, art and the details most people only feel.
         </p>
 
         <a className="hero__cta" href="#contact">

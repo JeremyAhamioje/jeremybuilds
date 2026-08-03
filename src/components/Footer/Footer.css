@@ -1,0 +1,299 @@
+/*
+ * Let's connect.
+ *
+ * The fresco runs full bleed behind everything, with the type sitting on top —
+ * the page opens on a detail of Renaissance ceiling and closes on a whole one.
+ */
+.footer {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(4rem, 12vh, 8rem) var(--gutter) clamp(1.4rem, 3vh, 2.2rem);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* ----------------------------------------------------------------- ground */
+
+.footer__ground {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.footer__ground img {
+  width: 100%;
+  height: 100%;
+  /*
+   * A portrait source across a landscape band, so it is cropped hard to a
+   * middle strip. `object-position` favours the upper half, where the sky and
+   * the figures are, over the architecture at the bottom edge.
+   */
+  object-fit: cover;
+  object-position: 50% 34%;
+}
+
+/*
+ * The scrim does two jobs, and it is worth being clear that the second is not
+ * a compromise:
+ *
+ *   1. contrast. Cream type over a busy, mid-tone fresco is unreadable without
+ *      it, and this footer is where someone decides whether to write;
+ *   2. resolution. The source is 736px wide against a band that renders past
+ *      1400 — roughly a 2x upscale. Darkened and low in contrast, that is
+ *      invisible; at full brightness it would not be.
+ *
+ * It is also simply how this site looks. A full-brightness fresco would be the
+ * only saturated surface on a near-black, single-accent page.
+ */
+.footer__scrim {
+  position: absolute;
+  inset: 0;
+  /*
+   * Two gradients that multiply, so the numbers are lower than they look: the
+   * open middle lands near 45% coverage, which leaves the painting clearly
+   * readable while still carrying the type. Heaviest at the top edge, where it
+   * has to blend into the solid black of the section above, and down the left,
+   * where the headline sits.
+   */
+  background:
+    linear-gradient(to bottom, rgba(10, 9, 8, 0.92) 0%, rgba(10, 9, 8, 0.4) 38%, rgba(10, 9, 8, 0.74) 100%),
+    linear-gradient(to right, rgba(10, 9, 8, 0.82) 0%, rgba(10, 9, 8, 0.16) 52%, rgba(10, 9, 8, 0.34) 100%);
+}
+
+/* ------------------------------------------------------------------ shell */
+
+.footer__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  grid-template-areas:
+    'headline interests'
+    'headline cta'
+    'bar bar';
+  align-items: start;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  max-width: 88rem;
+  margin: 0 auto;
+}
+
+/* --------------------------------------------------------------- headline */
+
+/*
+ * The largest type on the site. It runs off the optical grid on purpose — in
+ * the reference the headline is a wall the rest of the footer leans against,
+ * not a heading sitting above it.
+ */
+.footer__headline {
+  grid-area: headline;
+  display: flex;
+  flex-direction: column;
+  /*
+   * Grid items floor at their content width, so without this the headline
+   * refuses to shrink and pushes into the next column — "CONNECT" ran straight
+   * into "Got a project in mind?".
+   */
+  min-width: 0;
+  margin: 0;
+  font-family: var(--font-display);
+  /*
+   * Sized so the longest word still fits its column at every width. It is the
+   * largest type on the site and it should feel close to overflowing, but
+   * colliding with the copy beside it is not the same thing as tension.
+   */
+  font-size: clamp(3.5rem, 12.4vw, 11rem);
+  font-weight: 800;
+  line-height: 0.8;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  font-variation-settings: 'wdth' 82;
+}
+
+/* -------------------------------------------------------------- interests */
+
+.footer__interests {
+  grid-area: interests;
+  padding-top: clamp(0.5rem, 2vh, 1.5rem);
+}
+
+.footer__lead {
+  margin: 0 0 clamp(0.8rem, 2vh, 1.2rem);
+  font-family: var(--font-sans);
+  font-size: clamp(0.9rem, 1.5vw, 1.25rem);
+  font-variation-settings: 'wght' 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.footer__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/*
+ * Outlined rather than filled. Over a fresco a filled pill would need an
+ * opaque ground, and eight opaque blocks would hide the thing they are sitting
+ * on — the outline lets the painting run behind the whole list.
+ */
+.footer__pill {
+  padding: 0.42em 0.95em;
+  border: 1px solid rgba(239, 233, 223, 0.55);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: clamp(0.72rem, 1.15vw, 0.95rem);
+  font-variation-settings: 'wght' 500;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  backdrop-filter: blur(2px);
+}
+
+/* The one that earns the artwork. */
+.footer__pill:nth-child(4) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* -------------------------------------------------------------------- cta */
+
+.footer__cta {
+  grid-area: cta;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(0.7rem, 2vw, 1.2rem);
+  align-self: end;
+  padding-top: clamp(2rem, 8vh, 5rem);
+}
+
+.footer__cta-copy {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(0.95rem, 1.7vw, 1.5rem);
+  font-variation-settings: 'wght' 500;
+}
+
+/*
+ * Filled by default, unlike every other button on the site.
+ *
+ * This is the last thing on the page and the only action that matters here, so
+ * it is the one place worth breaking the outlined-button convention. An
+ * outlined pill over a busy painting also has to fight the artwork for
+ * legibility; a solid one does not.
+ */
+.footer__cta-button {
+  padding: 0.6em 1.4em;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: clamp(0.85rem, 1.5vw, 1.3rem);
+  font-variation-settings: 'wght' 600;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  color: var(--bg);
+  background: var(--ink);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.footer__cta-button:hover,
+.footer__cta-button:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+/* -------------------------------------------------------------------- bar */
+
+.footer__bar {
+  grid-area: bar;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: clamp(2rem, 7vh, 4rem);
+  padding-top: clamp(0.9rem, 2vh, 1.3rem);
+  border-top: 1px solid rgba(239, 233, 223, 0.28);
+}
+
+.footer__socials {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(0.9rem, 2.4vw, 2rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  font-variation-settings: 'wght' 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.footer__socials a {
+  color: var(--ink);
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.footer__socials a:hover,
+.footer__socials a:focus-visible {
+  color: var(--accent);
+}
+
+/* Listed but not yet linked — reads as information, not a broken control. */
+.footer__social--pending {
+  color: var(--ink);
+  opacity: 0.45;
+}
+
+.footer__colophon {
+  display: flex;
+  gap: 0.6em;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(239, 233, 223, 0.55);
+}
+
+/* --------------------------------------------------------------- compact */
+
+@media (max-width: 860px) {
+  /*
+   * Single column. The two-column arrangement depends on the headline being
+   * tall enough to sit beside two stacked blocks; at this width it is not, and
+   * the pills would be squeezed into a four-line column.
+   */
+  .footer__inner {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'headline'
+      'interests'
+      'cta'
+      'bar';
+  }
+
+  .footer__headline {
+    font-size: clamp(3.4rem, 22vw, 7rem);
+  }
+
+  .footer__cta {
+    padding-top: clamp(1rem, 4vh, 2rem);
+  }
+
+  .footer__scrim {
+    /* Less horizontal falloff: at this width there is no clear side to keep. */
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 9, 8, 0.92) 0%,
+      rgba(10, 9, 8, 0.72) 40%,
+      rgba(10, 9, 8, 0.9) 100%
+    );
+  }
+}

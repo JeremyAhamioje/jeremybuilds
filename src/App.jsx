@@ -4,6 +4,7 @@ import About from './components/About/About.jsx'
 import Services from './components/Services/Services.jsx'
 import Projects from './components/Projects/Projects.jsx'
 import Tools from './components/Tools/Tools.jsx'
+import Footer from './components/Footer/Footer.jsx'
 import Preloader from './components/Preloader/Preloader.jsx'
 import { PRELOADER_CONFIG } from './components/Preloader/preloaderConfig.js'
 import { LoadingProvider, useLoadingManager } from './lib/loading/LoadingContext.jsx'
@@ -52,18 +53,15 @@ function AppShell() {
       <main className="app" inert={revealed ? undefined : ''}>
         <Hero />
 
-        {/*
-          Before the work, not after it. Services state the offer; the projects
-          then answer it. Reversed, this would be a recap of what the visitor
-          just scrolled past.
-        */}
-        <Services />
-
         <Projects />
 
         <About />
 
+        <Services />
+
         <Tools />
+
+        <Footer />
       </main>
     </>
   )

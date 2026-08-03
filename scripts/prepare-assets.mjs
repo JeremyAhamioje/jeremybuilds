@@ -109,6 +109,18 @@ const ASSETS = [
     /** Rendered small inside the resume card, so the ladder stops early. */
     widths: [240, 480, 720],
   },
+  {
+    id: 'fresco',
+    kind: 'photo',
+    file: 'fresco.jpg',
+    /**
+     * The footer ground. Only 736px of source for a full-bleed band, so it is
+     * deliberately used dark and behind a scrim — at that treatment the
+     * upscale is invisible, where at full brightness it would not be. The
+     * ladder stops at native; the pipeline never invents pixels.
+     */
+    widths: [480, 720],
+  },
   ...WORK.map((id) => ({
     id: `work-${id}`,
     kind: 'photo',

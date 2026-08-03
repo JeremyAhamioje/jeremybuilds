@@ -33,6 +33,15 @@
       720
     ]
   },
+  "fresco": {
+    "intrinsicWidth": 736,
+    "intrinsicHeight": 1309,
+    "aspectRatio": 0.562261,
+    "widths": [
+      480,
+      720
+    ]
+  },
   "work-operatorstudio": {
     "intrinsicWidth": 922,
     "intrinsicHeight": 981,
