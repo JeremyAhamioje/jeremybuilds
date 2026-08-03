@@ -1,0 +1,208 @@
+.about {
+  position: relative;
+  background: var(--bg);
+  padding: clamp(4rem, 11vh, 9rem) var(--gutter) clamp(4rem, 10vh, 8rem);
+}
+
+.about__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.92fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: start;
+  max-width: 100rem;
+  margin: 0 inherit;
+}
+
+/* ------------------------------------------------------------------ intro */
+
+.about__intro {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.2rem, 2.6vh, 2rem);
+  /* Sticks while the sheet scrolls past — the sheet is the longer object. */
+  position: sticky;
+  top: clamp(3rem, 12vh, 8rem);
+}
+
+.about__headline {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /*
+   * Shrink to the widest line. Without this the block fills the grid column and
+   * the signature's flex-end lands on the column edge — floating in space well
+   * right of the type it is supposed to be signing.
+   */
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.8rem, 7.4vw, 7rem);
+  line-height: 0.82;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+
+.about__headline-line {
+  display: block;
+}
+
+/*
+ * Signature. Overlaps the headline's last line and sits right of centre, the
+ * way a name is signed under a statement rather than typeset beneath it.
+ */
+.about__signature {
+  align-self: flex-end;
+  margin-top: -0.32em;
+  margin-right: 0.08em;
+  font-family: var(--font-serif);
+  font-size: clamp(0.9rem, 1.6vw, 1.5rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-transform: none;
+  color: var(--ink);
+}
+
+.about__copy {
+  max-width: 42ch;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(0.92rem, 1.32vw, 1.25rem);
+  font-weight: 400;
+  line-height: 1.42;
+  letter-spacing: 0.004em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+
+.about__copy--dim {
+  color: var(--ink-dim);
+}
+
+/* --------------------------------------------------------------- document */
+
+.about__document {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: clamp(1.1rem, 2.2vw, 1.8rem);
+}
+
+/*
+ * A whisper of rotation. Enough that the sheet reads as placed on the page
+ * rather than pasted into a grid slot; small enough that nobody consciously
+ * registers it as tilted.
+ */
+.about__sheet {
+  transform: rotate(-0.5deg);
+}
+
+/* ---------------------------------------------------------------- actions */
+
+.about__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.about__download {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: clamp(0.7rem, 1.1vw, 0.95rem) clamp(1.3rem, 2.2vw, 1.9rem);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink);
+  transition: color 0.35s ease, border-color 0.35s ease;
+}
+
+/* Same wipe as the hero CTA, so the two read as one system. */
+.about__download::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.about__download-label,
+.about__download-icon {
+  position: relative;
+}
+
+.about__download-icon {
+  width: 1em;
+  height: 1em;
+  transition: transform 0.35s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.about__download:hover,
+.about__download:focus-visible {
+  color: var(--bg);
+  border-color: var(--accent);
+}
+
+.about__download:hover::before,
+.about__download:focus-visible::before {
+  transform: scaleX(1);
+}
+
+/* The arrow nudges down — the gesture the button describes. */
+.about__download:hover .about__download-icon,
+.about__download:focus-visible .about__download-icon {
+  transform: translateY(2px);
+}
+
+.about__actions-note {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+/* ----------------------------------------------------------------- narrow */
+
+@media (max-width: 900px) {
+  .about__inner {
+    grid-template-columns: minmax(0, 1fr);
+    gap: clamp(2.2rem, 6vh, 3.5rem);
+  }
+
+  /* Nothing to stick to once the columns stack. */
+  .about__intro {
+    position: static;
+  }
+
+  .about__sheet {
+    transform: none;
+  }
+
+  .about__actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about__download::before,
+  .about__download-icon {
+    transition: none;
+  }
+}

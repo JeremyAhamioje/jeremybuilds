@@ -1,0 +1,271 @@
+/*
+ * The resume sheet.
+ *
+ * Its own light island on a dark page. Colours are declared locally rather than
+ * inherited from the site tokens, because this is a document with its own
+ * material — paper — and it should not shift if the page palette is retuned.
+ */
+.resume {
+  --paper: #f2ede4;
+  --paper-ink: #17151244;
+  --ink-strong: #1a1714;
+  --ink-body: #4b453d;
+  --ink-muted: #8a8177;
+  --paper-rule: rgba(26, 23, 20, 0.14);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.1rem, 1.9vw, 1.9rem);
+  padding: clamp(1.4rem, 2.4vw, 2.5rem);
+  background: var(--paper);
+  color: var(--ink-body);
+  font-family: var(--font-sans);
+  /* Sheet, not card: a barely-there radius and a long soft shadow. */
+  border-radius: 3px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06),
+    0 30px 60px -20px rgba(0, 0, 0, 0.7),
+    0 60px 120px -40px rgba(0, 0, 0, 0.5);
+}
+
+/* ------------------------------------------------------------------- meta */
+
+.resume__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--paper-rule);
+  font-size: clamp(0.52rem, 0.62vw, 0.66rem);
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+/* --------------------------------------------------------------- identity */
+
+.resume__identity {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.resume__name {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-variation-settings: 'wdth' 100, 'wght' 500;
+  font-size: clamp(1.35rem, 2.5vw, 2.3rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink-strong);
+}
+
+.resume__role {
+  margin: 0.3em 0 0;
+  font-size: clamp(0.72rem, 1vw, 0.95rem);
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+
+/* Portrait sits flush with the name's baseline block, like a passport photo. */
+.resume__portrait {
+  flex-shrink: 0;
+  width: clamp(4.6rem, 9vw, 7.4rem);
+  border-radius: 2px;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.resume__portrait img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+}
+
+/* ---------------------------------------------------------------- columns */
+
+.resume__columns {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: clamp(1.2rem, 2.4vw, 2.4rem);
+  padding-top: 0.2rem;
+  border-top: 1px solid var(--paper-rule);
+}
+
+.resume__column {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.9rem, 1.6vw, 1.5rem);
+  min-width: 0;
+}
+
+/*
+ * Section titles. The highlight is a pseudo-element behind the text that wipes
+ * in on scroll — see aboutAnimation.js. Kept as a marker sweep rather than a
+ * solid block so it reads as annotation, not as a filled label.
+ */
+.resume__section-title {
+  position: relative;
+  margin: 1.1rem 0 0;
+  font-size: clamp(0.55rem, 0.68vw, 0.7rem);
+  font-weight: 600;
+  letter-spacing: 0.19em;
+  text-transform: uppercase;
+  color: var(--ink-strong);
+  /*
+   * Must shrink to its text or the highlight runs the full column. `align-self`
+   * alone is not enough — it only applies inside a flex parent, and the toolkit
+   * footer is a plain block, where the heading would stretch edge to edge.
+   */
+  width: fit-content;
+  align-self: flex-start;
+}
+
+.resume__section-title span {
+  position: relative;
+  z-index: 1;
+}
+
+.resume__section-title::before {
+  content: '';
+  position: absolute;
+  left: -0.3em;
+  right: -0.3em;
+  /* Sits low, like a highlighter run under the words rather than over them. */
+  top: 42%;
+  bottom: -0.18em;
+  background: var(--accent);
+  opacity: 0.26;
+  /*
+   * Defaults to the FINISHED state. Pseudo-elements cannot be tweened, so the
+   * animation drives this custom property on the parent — and if it never runs
+   * (reduced motion, JS disabled), the highlight is simply already there rather
+   * than invisible.
+   */
+  transform: scaleX(var(--highlight-scale, 1));
+  transform-origin: left center;
+}
+
+.resume__group:first-child .resume__section-title,
+.resume__column > .resume__section-title:first-child {
+  margin-top: 0;
+}
+
+/* ---------------------------------------------------------------- entries */
+
+.resume__entries {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.85rem, 1.5vw, 1.35rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resume__entry-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-size: clamp(0.5rem, 0.6vw, 0.64rem);
+  letter-spacing: 0.05em;
+  color: var(--ink-muted);
+}
+
+.resume__title {
+  margin: 0.3em 0 0;
+  font-size: clamp(0.78rem, 1.02vw, 1rem);
+  font-weight: 500;
+  color: var(--ink-strong);
+}
+
+.resume__org {
+  margin: 0.05em 0 0;
+  font-size: clamp(0.66rem, 0.82vw, 0.8rem);
+  font-weight: 600;
+  color: var(--ink-body);
+}
+
+.resume__summary {
+  margin: 0.4em 0 0;
+  font-size: clamp(0.64rem, 0.8vw, 0.79rem);
+  line-height: 1.5;
+  color: var(--ink-body);
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------------ lists */
+
+.resume__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.resume__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.36em;
+  margin: 0.55rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: clamp(0.64rem, 0.8vw, 0.79rem);
+  line-height: 1.4;
+  color: var(--ink-body);
+}
+
+.resume__list li {
+  position: relative;
+  padding-left: 0.85em;
+}
+
+.resume__list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.52em;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ink-muted);
+}
+
+/* ---------------------------------------------------------------- toolkit */
+
+.resume__toolkit {
+  padding-top: clamp(0.6rem, 1.2vw, 1rem);
+  border-top: 1px solid var(--paper-rule);
+}
+
+.resume__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.36rem 0.4rem;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resume__tags li {
+  padding: 0.28em 0.62em;
+  border: 1px solid var(--paper-rule);
+  border-radius: 999px;
+  font-size: clamp(0.55rem, 0.68vw, 0.68rem);
+  letter-spacing: 0.03em;
+  color: var(--ink-body);
+}
+
+/* ----------------------------------------------------------------- narrow */
+
+@media (max-width: 900px) {
+  .resume__columns {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .resume__meta {
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+  }
+}

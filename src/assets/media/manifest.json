@@ -22,5 +22,15 @@
       1440,
       1542
     ]
+  },
+  "headshot": {
+    "intrinsicWidth": 896,
+    "intrinsicHeight": 1195,
+    "aspectRatio": 0.749791,
+    "widths": [
+      240,
+      480,
+      720
+    ]
   }
 }

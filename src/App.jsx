@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import Hero from './components/Hero/Hero.jsx'
+import About from './components/About/About.jsx'
 import Preloader from './components/Preloader/Preloader.jsx'
 import { PRELOADER_CONFIG } from './components/Preloader/preloaderConfig.js'
 import { LoadingProvider, useLoadingManager } from './lib/loading/LoadingContext.jsx'
@@ -48,10 +49,7 @@ function AppShell() {
       <main className="app" inert={revealed ? undefined : ''}>
         <Hero />
 
-        {/* Placeholder for whatever follows — proves the hero's exit lands somewhere. */}
-        <section className="next-section">
-          <p>next section</p>
-        </section>
+        <About />
       </main>
     </>
   )

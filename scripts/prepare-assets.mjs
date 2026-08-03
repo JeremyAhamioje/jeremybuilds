@@ -5,7 +5,7 @@
  *          |
  *          v  alpha clean -> trim -> resize -> AVIF / WebP / PNG
  *          |
- *   src/assets/arms/       (imported by the app, hashed by Vite)
+ *   src/assets/media/      (imported by the app, hashed by Vite)
  *
  * Run with: npm run assets
  *
@@ -27,7 +27,7 @@ import sharp from 'sharp'
 
 const ROOT = path.resolve(import.meta.dirname, '..')
 const MASTERS = path.join(ROOT, 'assets/masters')
-const OUT = path.join(ROOT, 'src/assets/arms')
+const OUT = path.join(ROOT, 'src/assets/media')
 
 /**
  * Per-asset preparation settings.
@@ -45,6 +45,7 @@ const OUT = path.join(ROOT, 'src/assets/arms')
 const ASSETS = [
   {
     id: 'arm-a',
+    kind: 'cutout',
     file: 'arm-a.png',
     /** Reaching left — sits on the RIGHT of the composition. */
     alphaFloor: 32,
@@ -54,12 +55,26 @@ const ASSETS = [
   },
   {
     id: 'arm-b',
+    kind: 'cutout',
     file: 'arm-b.png',
     /** Reaching right — sits on the LEFT of the composition. The brighter of
      * the two, so it is the reference the other is matched to. */
     alphaFloor: 8,
     alphaCeil: 254,
     tone: null,
+  },
+  {
+    id: 'headshot',
+    /**
+     * A photograph, not a cutout: opaque, so there is no matte to clean and no
+     * transparent margin to trim. It also gets a JPEG rather than a PNG
+     * fallback — lossless compression on a photograph is pure waste, roughly
+     * an order of magnitude larger for no visible gain.
+     */
+    kind: 'photo',
+    file: 'headshot.png',
+    /** Rendered small inside the resume card, so the ladder stops early. */
+    widths: [240, 480, 720],
   },
 ]
 
@@ -86,6 +101,13 @@ const ENCODERS = {
   avif: (pipeline) => pipeline.avif({ quality: 62, effort: 6 }),
   webp: (pipeline) => pipeline.webp({ quality: 82, effort: 5, alphaQuality: 90 }),
   png: (pipeline) => pipeline.png({ compressionLevel: 9, palette: false }),
+}
+
+/** Photographs: same modern formats, but JPEG as the last-resort fallback. */
+const PHOTO_ENCODERS = {
+  avif: (pipeline) => pipeline.avif({ quality: 58, effort: 6 }),
+  webp: (pipeline) => pipeline.webp({ quality: 80, effort: 5 }),
+  jpeg: (pipeline) => pipeline.jpeg({ quality: 82, mozjpeg: true, progressive: true }),
 }
 
 /**
@@ -137,7 +159,52 @@ function meanLuminance(data, channels) {
   return count === 0 ? 0 : sum / count
 }
 
+/**
+ * Photographs: flatten to opaque, resize, encode. No matte work, no trim —
+ * the frame IS the composition.
+ */
+async function preparePhoto(asset) {
+  const source = path.join(MASTERS, asset.file)
+  const meta = await sharp(source).metadata()
+
+  const maxWidth = Math.min(meta.width, ...[Math.max(...asset.widths)])
+  const widths = [...new Set(asset.widths.filter((w) => w <= maxWidth).concat(maxWidth))].sort(
+    (a, b) => a - b,
+  )
+
+  const outputs = []
+
+  for (const targetWidth of widths) {
+    for (const [format, encode] of Object.entries(PHOTO_ENCODERS)) {
+      const pipeline = sharp(source)
+        // A stray alpha channel on a photo just wastes bytes.
+        .flatten({ background: '#ffffff' })
+        .resize({ width: targetWidth, kernel: 'lanczos3' })
+
+      const buffer = await encode(pipeline).toBuffer()
+      const name = `${asset.id}-${targetWidth}.${format}`
+
+      await writeFile(path.join(OUT, name), buffer)
+      outputs.push({ name, format, width: targetWidth, bytes: buffer.length })
+    }
+  }
+
+  return {
+    id: asset.id,
+    kind: 'photo',
+    master: { width: meta.width, height: meta.height },
+    content: { width: meta.width, height: meta.height },
+    intrinsicWidth: meta.width,
+    intrinsicHeight: meta.height,
+    aspectRatio: Number((meta.width / meta.height).toFixed(6)),
+    widths,
+    outputs,
+  }
+}
+
 async function prepare(asset) {
+  if (asset.kind === 'photo') return preparePhoto(asset)
+
   const source = path.join(MASTERS, asset.file)
 
   const { data, info } = await sharp(source).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
@@ -212,18 +279,27 @@ async function main() {
       widths: result.widths,
     }
 
-    const trimmed =
-      100 - (result.content.width * result.content.height * 100) / (result.master.width * result.master.height)
-
     console.log(`\n${result.id}`)
     console.log(`  master        ${result.master.width} x ${result.master.height}`)
-    console.log(
-      `  trimmed to    ${result.content.width} x ${result.content.height}  (-${trimmed.toFixed(1)}% area)`,
-    )
-    console.log(`  mean luminance ${result.luminance} -> ${result.adjustedLuminance}`)
+
+    // Trim and tone are cutout concerns; a photograph has neither.
+    if (result.kind !== 'photo') {
+      const trimmed =
+        100 -
+        (result.content.width * result.content.height * 100) /
+          (result.master.width * result.master.height)
+
+      console.log(
+        `  trimmed to    ${result.content.width} x ${result.content.height}  (-${trimmed.toFixed(1)}% area)`,
+      )
+      console.log(`  mean luminance ${result.luminance} -> ${result.adjustedLuminance}`)
+    }
+
     console.log(`  widths        ${result.widths.join(', ')}`)
 
-    for (const format of Object.keys(ENCODERS)) {
+    const formats = Object.keys(result.kind === 'photo' ? PHOTO_ENCODERS : ENCODERS)
+
+    for (const format of formats) {
       const row = result.outputs
         .filter((o) => o.format === format)
         .map((o) => `${o.width}px ${(o.bytes / 1024).toFixed(0)}KB`)
@@ -235,7 +311,7 @@ async function main() {
   await writeFile(path.join(OUT, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`)
 
   const files = await readdir(OUT)
-  console.log(`\nwrote ${files.length} files to src/assets/arms/`)
+  console.log(`\nwrote ${files.length} files to src/assets/media/`)
 }
 
 main().catch((error) => {

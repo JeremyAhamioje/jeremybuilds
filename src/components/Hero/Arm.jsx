@@ -1,5 +1,5 @@
 import { forwardRef, useEffect, useRef } from 'react'
-import { ARM_ASSETS } from '../../lib/assets/armAssets.js'
+import { MEDIA_ASSETS } from '../../lib/assets/mediaAssets.js'
 import { ARM_ANCHORS } from './heroConfig.js'
 
 /**
@@ -19,7 +19,7 @@ const Arm = forwardRef(function Arm(
   ref,
 ) {
   const imgRef = useRef(null)
-  const asset = ARM_ASSETS[assetId]
+  const asset = MEDIA_ASSETS[assetId]
   const anchor = ARM_ANCHORS[assetId] ?? { x: 0.5, y: 0.5 }
 
   useEffect(() => {
