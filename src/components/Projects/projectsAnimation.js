@@ -4,27 +4,40 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 gsap.registerPlugin(ScrollTrigger)
 
 /**
- * PROJECTS_MOTION — the scroll storyboard, as normalised progress through the
- * pinned section.
+ * PROJECTS_MOTION — the scroll storyboard.
  *
- *   0.00  intro: headline and subtitle, image narrow and centred
- *   0.16  headline releases, the frame starts opening
- *   0.34  frame is full width
- *   0.38  frame settles left, detail column fades in
- *   0.44  first project at rest — everything after this is project-to-project
- *   1.00  last project at rest, section releases
+ * The section's pin length is measured in viewport heights and grows with the
+ * project count:
+ *
+ *     total = introScroll + perProjectScroll * projectCount
+ *
+ * The opening therefore has to be a FIXED SCROLL COST, not a fixed fraction of
+ * that total. Expressing it as a fraction works right up until the list grows:
+ * at four projects a 0.44 fraction was 1.85vh of opening, but at twenty the
+ * same fraction is 5.9vh — the intro type would take six screens to leave.
+ *
+ * So `opening` below is expressed as fractions OF THE OPENING, and mapped onto
+ * timeline progress at build time once the real total is known. The storyboard
+ * then reads the same at any project count:
+ *
+ *   0%    intro: headline and subtitle, image narrow and centred
+ *   36%   headline releases, the frame starts opening
+ *   77%   frame is wide and centred
+ *   86%   frame settles left, detail column fades in
+ *   100%  first project at rest — everything after is project-to-project
  */
 export const PROJECTS_MOTION = {
-  /** Viewport heights of pin. Grows with the project count. */
+  /** Viewport heights spent on the opening, regardless of project count. */
   introScroll: 1.5,
-  perProjectScroll: 0.9,
+  /** Viewport heights each project holds before wiping to the next. */
+  perProjectScroll: 0.55,
   scrub: 0.7,
 
-  keyframes: {
-    introOut: 0.16,
-    frameOpen: 0.34,
-    frameSettle: 0.38,
-    detailIn: 0.44,
+  /** Fractions of the opening — see above. */
+  opening: {
+    introOut: 0.36,
+    frameOpen: 0.77,
+    frameSettle: 0.86,
   },
 }
 
@@ -52,7 +65,6 @@ export function createProjectsAnimation(refs, projectCount, onIndexChange) {
   if (!section || !frame || projectCount === 0) return () => {}
 
   const mm = gsap.matchMedia()
-  const key = PROJECTS_MOTION.keyframes
 
   /*
    * Reduced motion: no pin, no sequence. The section falls back to a plain
@@ -66,8 +78,27 @@ export function createProjectsAnimation(refs, projectCount, onIndexChange) {
   mm.add('(prefers-reduced-motion: no-preference) and (min-width: 901px)', () => {
     section.dataset.static = 'false'
 
+    /*
+     * Every project gets a full dwell, including the last — hence `* count`
+     * rather than `* (count - 1)`, which used to let the final project appear
+     * only at the instant the pin released.
+     */
     const totalScroll =
-      PROJECTS_MOTION.introScroll + PROJECTS_MOTION.perProjectScroll * (projectCount - 1)
+      PROJECTS_MOTION.introScroll + PROJECTS_MOTION.perProjectScroll * projectCount
+
+    /*
+     * Where the opening ends, in timeline progress. Falls as the list grows,
+     * which is the point: the opening keeps costing 1.5 viewport heights.
+     */
+    const openEnd = PROJECTS_MOTION.introScroll / totalScroll
+    const o = PROJECTS_MOTION.opening
+
+    const key = {
+      introOut: openEnd * o.introOut,
+      frameOpen: openEnd * o.frameOpen,
+      frameSettle: openEnd * o.frameSettle,
+      detailIn: openEnd,
+    }
 
     /*
      * Declare the opening state rather than letting GSAP infer it from the CSS

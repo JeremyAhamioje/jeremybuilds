@@ -42,6 +42,39 @@ const OUT = path.join(ROOT, 'src/assets/media')
  * below 1 with a positive offset lifts the midtones while pinning the white
  * point where it already sits. Null leaves the artwork untouched.
  */
+/**
+ * Project captures, in the order the work section presents them.
+ *
+ * Ids are slugs rather than indices so that reordering the portfolio, or
+ * dropping a project, never silently repoints an image at the wrong write-up —
+ * which is exactly what `project-01..04` invited.
+ *
+ * Three of these are abstract stand-ins from `npm run placeholders`, not real
+ * captures: jeremy-blog, gaming-hub, framer-project.
+ */
+const WORK = [
+  'operatorstudio',
+  'testedtools',
+  'parking-arbitrage',
+  'sinoth-farms',
+  'sendy',
+  'framer-project',
+  'shredded',
+  'jeremy-ai',
+  'maison-jeremy',
+  'nightshift',
+  'jeremy-blog',
+  'windows-portfolio',
+  'orbita',
+  'engineering',
+  'pagani',
+  'gaming-hub',
+  'trippit',
+  'retro-spins',
+  'museum-hub',
+  'food-delivery',
+]
+
 const ASSETS = [
   {
     id: 'arm-a',
@@ -76,34 +109,18 @@ const ASSETS = [
     /** Rendered small inside the resume card, so the ladder stops early. */
     widths: [240, 480, 720],
   },
-  {
-    id: 'project-01',
+  ...WORK.map((id) => ({
+    id: `work-${id}`,
     kind: 'photo',
-    file: 'project-01.png',
-    /** Rendered large — up to the full stage width on desktop. */
-    widths: [640, 1024, 1440],
-  },
-  {
-    id: 'project-02',
-    kind: 'photo',
-    file: 'project-02.png',
-    /** Rendered large — up to the full stage width on desktop. */
-    widths: [640, 1024, 1440],
-  },
-  {
-    id: 'project-03',
-    kind: 'photo',
-    file: 'project-03.png',
-    /** Rendered large — up to the full stage width on desktop. */
-    widths: [640, 1024, 1440],
-  },
-  {
-    id: 'project-04',
-    kind: 'photo',
-    file: 'project-04.png',
-    /** Rendered large — up to the full stage width on desktop. */
-    widths: [640, 1024, 1440],
-  },
+    file: `work-${id}.png`,
+    /**
+     * Rendered large — up to ~60vw of the stage on desktop. The ladder is
+     * declared once here rather than repeated twenty times; `preparePhoto`
+     * clips it to each master's native width, so a small master simply emits
+     * fewer rungs instead of an upscaled one.
+     */
+    widths: [480, 720, 1024, 1440],
+  })),
 ]
 
 /**

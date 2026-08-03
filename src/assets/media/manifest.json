@@ -33,44 +33,210 @@
       720
     ]
   },
-  "project-01": {
+  "work-operatorstudio": {
+    "intrinsicWidth": 922,
+    "intrinsicHeight": 981,
+    "aspectRatio": 0.939857,
+    "widths": [
+      480,
+      720,
+      922
+    ]
+  },
+  "work-testedtools": {
+    "intrinsicWidth": 943,
+    "intrinsicHeight": 703,
+    "aspectRatio": 1.341394,
+    "widths": [
+      480,
+      720,
+      943
+    ]
+  },
+  "work-parking-arbitrage": {
+    "intrinsicWidth": 1008,
+    "intrinsicHeight": 808,
+    "aspectRatio": 1.247525,
+    "widths": [
+      480,
+      720,
+      1008
+    ]
+  },
+  "work-sinoth-farms": {
+    "intrinsicWidth": 942,
+    "intrinsicHeight": 865,
+    "aspectRatio": 1.089017,
+    "widths": [
+      480,
+      720,
+      942
+    ]
+  },
+  "work-sendy": {
+    "intrinsicWidth": 922,
+    "intrinsicHeight": 788,
+    "aspectRatio": 1.170051,
+    "widths": [
+      480,
+      720,
+      922
+    ]
+  },
+  "work-framer-project": {
     "intrinsicWidth": 1600,
     "intrinsicHeight": 1200,
     "aspectRatio": 1.333333,
     "widths": [
-      640,
+      480,
+      720,
       1024,
       1440
     ]
   },
-  "project-02": {
+  "work-shredded": {
+    "intrinsicWidth": 1082,
+    "intrinsicHeight": 696,
+    "aspectRatio": 1.554598,
+    "widths": [
+      480,
+      720,
+      1024,
+      1082
+    ]
+  },
+  "work-jeremy-ai": {
+    "intrinsicWidth": 1000,
+    "intrinsicHeight": 640,
+    "aspectRatio": 1.5625,
+    "widths": [
+      480,
+      720,
+      1000
+    ]
+  },
+  "work-maison-jeremy": {
+    "intrinsicWidth": 1152,
+    "intrinsicHeight": 773,
+    "aspectRatio": 1.490298,
+    "widths": [
+      480,
+      720,
+      1024,
+      1152
+    ]
+  },
+  "work-nightshift": {
+    "intrinsicWidth": 1157,
+    "intrinsicHeight": 912,
+    "aspectRatio": 1.26864,
+    "widths": [
+      480,
+      720,
+      1024,
+      1157
+    ]
+  },
+  "work-jeremy-blog": {
     "intrinsicWidth": 1600,
     "intrinsicHeight": 1200,
     "aspectRatio": 1.333333,
     "widths": [
-      640,
+      480,
+      720,
       1024,
       1440
     ]
   },
-  "project-03": {
+  "work-windows-portfolio": {
+    "intrinsicWidth": 800,
+    "intrinsicHeight": 795,
+    "aspectRatio": 1.006289,
+    "widths": [
+      480,
+      720,
+      800
+    ]
+  },
+  "work-orbita": {
+    "intrinsicWidth": 989,
+    "intrinsicHeight": 682,
+    "aspectRatio": 1.450147,
+    "widths": [
+      480,
+      720,
+      989
+    ]
+  },
+  "work-engineering": {
+    "intrinsicWidth": 839,
+    "intrinsicHeight": 771,
+    "aspectRatio": 1.088197,
+    "widths": [
+      480,
+      720,
+      839
+    ]
+  },
+  "work-pagani": {
+    "intrinsicWidth": 907,
+    "intrinsicHeight": 868,
+    "aspectRatio": 1.044931,
+    "widths": [
+      480,
+      720,
+      907
+    ]
+  },
+  "work-gaming-hub": {
     "intrinsicWidth": 1600,
     "intrinsicHeight": 1200,
     "aspectRatio": 1.333333,
     "widths": [
-      640,
+      480,
+      720,
       1024,
       1440
     ]
   },
-  "project-04": {
-    "intrinsicWidth": 1600,
-    "intrinsicHeight": 1200,
-    "aspectRatio": 1.333333,
+  "work-trippit": {
+    "intrinsicWidth": 943,
+    "intrinsicHeight": 818,
+    "aspectRatio": 1.152812,
     "widths": [
-      640,
-      1024,
-      1440
+      480,
+      720,
+      943
+    ]
+  },
+  "work-retro-spins": {
+    "intrinsicWidth": 973,
+    "intrinsicHeight": 843,
+    "aspectRatio": 1.154211,
+    "widths": [
+      480,
+      720,
+      973
+    ]
+  },
+  "work-museum-hub": {
+    "intrinsicWidth": 903,
+    "intrinsicHeight": 752,
+    "aspectRatio": 1.200798,
+    "widths": [
+      480,
+      720,
+      903
+    ]
+  },
+  "work-food-delivery": {
+    "intrinsicWidth": 889,
+    "intrinsicHeight": 881,
+    "aspectRatio": 1.009081,
+    "widths": [
+      480,
+      720,
+      889
     ]
   }
 }

@@ -117,11 +117,11 @@ export default function Projects() {
             {projects.map((project, index) => (
               <li className="projects__card" key={project.id}>
                 <ProjectImage project={project} eager={index === 0} sizes="92vw" />
+                <ProjectMeta project={project} />
                 <h3 className="projects__title">{project.title}</h3>
+                <ProjectTags project={project} />
                 <p className="projects__summary">{project.summary}</p>
-                <a className="projects__cta" href={project.href}>
-                  View case study
-                </a>
+                <ProjectLink project={project} />
               </li>
             ))}
           </ol>
@@ -171,11 +171,11 @@ export default function Projects() {
                   }}
                   aria-hidden={index !== activeIndex}
                 >
+                  <ProjectMeta project={project} />
                   <h3 className="projects__title">{project.title}</h3>
-                  <a className="projects__cta" href={project.href} tabIndex={index === activeIndex ? 0 : -1}>
-                    View case study
-                  </a>
+                  <ProjectTags project={project} />
                   <p className="projects__summary">{project.summary}</p>
+                  <ProjectLink project={project} tabIndex={index === activeIndex ? 0 : -1} />
                 </div>
               ))}
             </div>
@@ -193,6 +193,60 @@ export default function Projects() {
         </ol>
       </div>
     </section>
+  )
+}
+
+function ProjectMeta({ project }) {
+  return (
+    <p className="projects__meta">
+      <span>{project.year}</span>
+      <span className="projects__meta-rule" aria-hidden="true" />
+      <span>{project.role}</span>
+    </p>
+  )
+}
+
+function ProjectTags({ project }) {
+  return (
+    <ul className="projects__tags">
+      {project.tags.map((tag) => (
+        <li className="projects__tag" key={tag}>
+          {tag}
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/**
+ * Live projects get a link; the rest get a status.
+ *
+ * Three entries have nothing to link to yet — a Figma proposal, a concept and a
+ * build in progress. Pointing a "visit site" button at `#` or `/wip` for those
+ * would cost more trust than saying so, and the label is more informative than
+ * the dead button would have been anyway.
+ *
+ * Live links open in a new tab: the sequence is a pinned scroll position that a
+ * back button restores badly.
+ */
+function ProjectLink({ project, tabIndex = 0 }) {
+  if (!project.href) {
+    return <p className="projects__status">{project.status ?? 'In development'}</p>
+  }
+
+  return (
+    <a
+      className="projects__cta"
+      href={project.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      tabIndex={tabIndex}
+    >
+      Visit site
+      <span className="projects__cta-arrow" aria-hidden="true">
+        ↗
+      </span>
+    </a>
   )
 }
 
