@@ -76,6 +76,34 @@ const ASSETS = [
     /** Rendered small inside the resume card, so the ladder stops early. */
     widths: [240, 480, 720],
   },
+  {
+    id: 'project-01',
+    kind: 'photo',
+    file: 'project-01.png',
+    /** Rendered large — up to the full stage width on desktop. */
+    widths: [640, 1024, 1440],
+  },
+  {
+    id: 'project-02',
+    kind: 'photo',
+    file: 'project-02.png',
+    /** Rendered large — up to the full stage width on desktop. */
+    widths: [640, 1024, 1440],
+  },
+  {
+    id: 'project-03',
+    kind: 'photo',
+    file: 'project-03.png',
+    /** Rendered large — up to the full stage width on desktop. */
+    widths: [640, 1024, 1440],
+  },
+  {
+    id: 'project-04',
+    kind: 'photo',
+    file: 'project-04.png',
+    /** Rendered large — up to the full stage width on desktop. */
+    widths: [640, 1024, 1440],
+  },
 ]
 
 /**

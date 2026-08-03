@@ -32,5 +32,45 @@
       480,
       720
     ]
+  },
+  "project-01": {
+    "intrinsicWidth": 1600,
+    "intrinsicHeight": 1200,
+    "aspectRatio": 1.333333,
+    "widths": [
+      640,
+      1024,
+      1440
+    ]
+  },
+  "project-02": {
+    "intrinsicWidth": 1600,
+    "intrinsicHeight": 1200,
+    "aspectRatio": 1.333333,
+    "widths": [
+      640,
+      1024,
+      1440
+    ]
+  },
+  "project-03": {
+    "intrinsicWidth": 1600,
+    "intrinsicHeight": 1200,
+    "aspectRatio": 1.333333,
+    "widths": [
+      640,
+      1024,
+      1440
+    ]
+  },
+  "project-04": {
+    "intrinsicWidth": 1600,
+    "intrinsicHeight": 1200,
+    "aspectRatio": 1.333333,
+    "widths": [
+      640,
+      1024,
+      1440
+    ]
   }
 }

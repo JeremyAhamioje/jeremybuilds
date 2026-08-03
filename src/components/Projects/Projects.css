@@ -1,0 +1,378 @@
+/*
+ * Selected work.
+ *
+ * The one light section on a dark site. It reuses the resume's paper so the two
+ * read as the same material — dark for the artwork, paper for the record of the
+ * work. Local tokens, like the resume, so the section holds together if the
+ * page palette is retuned around it.
+ */
+.projects {
+  --paper: #f0ece3;
+  --paper-ink: #1c1a16;
+  --paper-body: #4b453d;
+  --paper-muted: #8a8177;
+  --paper-rule: rgba(28, 26, 22, 0.12);
+
+  position: relative;
+  height: 100svh;
+  background: var(--paper);
+  color: var(--paper-ink);
+  overflow: hidden;
+}
+
+/* Falls back to a normal scrolling block when the sequence is off. */
+.projects[data-static='true'] {
+  height: auto;
+  overflow: visible;
+}
+
+.projects__viewport {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: var(--gutter);
+  display: flex;
+  align-items: center;
+}
+
+/* Faint vertical rules, echoing the reference's column grid. */
+.projects__viewport::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to right,
+    var(--paper-rule) 0 1px,
+    transparent 1px 25%
+  );
+  opacity: 0.65;
+}
+
+/* ------------------------------------------------------------------ intro */
+
+.projects__intro {
+  position: absolute;
+  top: clamp(4rem, 12vh, 9rem);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  width: min(48rem, 86vw);
+  text-align: center;
+}
+
+.projects__headline {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2.8rem, 8vw, 7rem);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: var(--paper-ink);
+}
+
+.projects__subtitle {
+  max-width: 34ch;
+  margin: clamp(1rem, 2vh, 1.6rem) auto 0;
+  font-family: var(--font-sans);
+  font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+  line-height: 1.5;
+  color: var(--paper-body);
+  text-wrap: pretty;
+}
+
+/* ---------------------------------------------------------------- filters */
+
+.projects__filters {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(1.4rem, 4vh, 2.8rem);
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.projects__filter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.35em;
+  padding: 0.5em 0.95em;
+  border: 1px solid var(--paper-rule);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  font-family: var(--font-sans);
+  font-size: clamp(0.65rem, 0.8vw, 0.78rem);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: var(--paper-body);
+  cursor: pointer;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.projects__filter:hover:not(:disabled),
+.projects__filter:focus-visible {
+  border-color: var(--paper-ink);
+  color: var(--paper-ink);
+}
+
+.projects__filter[aria-pressed='true'] {
+  background: var(--paper-ink);
+  border-color: var(--paper-ink);
+  color: var(--paper);
+}
+
+.projects__filter:disabled {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+/* Count rides high and small, as in the reference. */
+.projects__filter-count {
+  font-size: 0.72em;
+  font-feature-settings: 'sups';
+  opacity: 0.7;
+}
+
+/* ------------------------------------------------------------------ stage */
+
+/*
+ * A positioned canvas rather than a flex row. The frame has to travel from
+ * narrow-and-centred to wide-and-left-justified, and a flex row cannot express
+ * "centred" while a sibling still occupies its share of the track.
+ */
+.projects__stage {
+  position: absolute;
+  inset: var(--gutter);
+  z-index: 2;
+}
+
+/*
+ * The frame. Width is animated from a narrow centred crop out to full — which
+ * is why it is a width tween rather than a scale: scaling would blow the image
+ * up past its native resolution and soften it exactly when it becomes the
+ * largest thing on screen.
+ */
+.projects__frame {
+  position: absolute;
+  top: 50%;
+  /* Opening state: narrow, centred. The timeline drives all three. */
+  left: 50%;
+  width: 34%;
+  aspect-ratio: 4 / 3;
+  transform: translate(-50%, -50%);
+  border-radius: 6px;
+  overflow: hidden;
+  background: rgba(28, 26, 22, 0.05);
+}
+
+.projects__slide {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  /* Every layer is present; the sequence controls which is revealed. */
+  clip-path: inset(0% 0% 0% 0%);
+}
+
+.projects__slide picture,
+.projects__slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.projects__slide img {
+  object-fit: cover;
+}
+
+/* ----------------------------------------------------------------- detail */
+
+.projects__detail {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 32%;
+  transform: translate(30px, -50%);
+  /* Starts offset and invisible; the opening timeline brings it in. */
+  opacity: 0;
+}
+
+.projects__counter {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin: 0 0 clamp(1.5rem, 5vh, 3.5rem);
+  font-family: var(--font-sans);
+  color: var(--paper-muted);
+}
+
+.projects__counter-current {
+  font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+  font-variation-settings: 'wght' 400;
+  color: var(--paper-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.projects__counter-total {
+  font-size: clamp(0.75rem, 1vw, 0.95rem);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Detail items stack so a crossfade has something to fade between. */
+.projects__detail-stack {
+  position: relative;
+  min-height: 14rem;
+}
+
+.projects__detail-item {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.projects__title {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3.6vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.005em;
+  color: var(--paper-ink);
+  text-wrap: balance;
+}
+
+.projects__cta {
+  display: inline-flex;
+  align-items: center;
+  margin-top: clamp(1rem, 2.4vh, 1.8rem);
+  padding: 0.62em 1.5em;
+  border: 1px solid var(--paper-rule);
+  border-radius: 999px;
+  font-family: var(--font-sans);
+  font-size: clamp(0.7rem, 0.9vw, 0.85rem);
+  text-decoration: none;
+  color: var(--paper-ink);
+  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.projects__cta:hover,
+.projects__cta:focus-visible {
+  background: var(--paper-ink);
+  border-color: var(--paper-ink);
+  color: var(--paper);
+}
+
+.projects__summary {
+  max-width: 34ch;
+  margin: clamp(2rem, 7vh, 5rem) 0 0;
+  font-family: var(--font-sans);
+  font-size: clamp(0.78rem, 0.98vw, 0.95rem);
+  line-height: 1.55;
+  color: var(--paper-body);
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------------- dots */
+
+.projects__dots {
+  position: absolute;
+  left: clamp(0.9rem, 2vw, 2rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.projects__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--paper-ink);
+  opacity: 0.22;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+
+.projects__dot[data-active='true'] {
+  opacity: 1;
+  transform: scale(1.35);
+}
+
+/* ------------------------------------------------------------------- list */
+
+/*
+ * Below the sequence breakpoint, or with motion reduced, the section renders
+ * different MARKUP: each project is a card carrying its own title and summary.
+ * Restyling the sequence markup instead would leave the copy stranded in a
+ * separate column with nothing to pair it to.
+ */
+.projects--list {
+  height: auto;
+  overflow: visible;
+}
+
+.projects--list .projects__viewport {
+  display: block;
+  height: auto;
+  padding-block: clamp(3.5rem, 9vh, 6rem);
+}
+
+.projects--list .projects__intro {
+  position: static;
+  transform: none;
+  width: auto;
+  margin-bottom: clamp(1.6rem, 4vh, 2.4rem);
+  text-align: left;
+}
+
+.projects--list .projects__subtitle {
+  margin-inline: 0;
+}
+
+.projects--list .projects__filters {
+  position: static;
+  transform: none;
+  justify-content: flex-start;
+  margin-bottom: clamp(2rem, 5vh, 3rem);
+}
+
+.projects__list {
+  display: grid;
+  gap: clamp(2.5rem, 7vh, 4.5rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.projects__card picture {
+  display: block;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.projects__card img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.projects__card .projects__title {
+  margin-top: clamp(0.9rem, 2.4vh, 1.4rem);
+  font-size: clamp(1.5rem, 5.5vw, 2.2rem);
+}
+
+.projects__card .projects__summary {
+  margin-top: 0.6rem;
+}
+
+.projects__card .projects__cta {
+  margin-top: clamp(0.9rem, 2.4vh, 1.3rem);
+}
