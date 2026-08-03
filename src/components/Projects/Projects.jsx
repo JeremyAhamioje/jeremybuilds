@@ -242,7 +242,7 @@ function ProjectLink({ project, tabIndex = 0 }) {
       rel="noopener noreferrer"
       tabIndex={tabIndex}
     >
-      Visit site
+      {project.cta ?? 'Visit site'}
       <span className="projects__cta-arrow" aria-hidden="true">
         ↗
       </span>

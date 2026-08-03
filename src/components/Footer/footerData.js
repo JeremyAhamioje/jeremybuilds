@@ -23,23 +23,22 @@ export const INTERESTS = [
 /**
  * Social links.
  *
- * `href: null` until the real profiles are supplied. Rendered as plain text
- * rather than as links, so nothing here is clickable-but-dead — a footer full
- * of `#` links is worse than a footer that simply lists where to find someone.
- * Fill in the URL and it becomes a link with no other change.
+ * `href: null` renders as plain text rather than a `#` link, so nothing here
+ * is ever clickable-but-dead. Twitter and Instagram are still waiting on real
+ * profile URLs; adding one turns it into a link with no other change.
  */
 export const SOCIALS = [
-  { label: 'LinkedIn', href: null },
-  { label: 'GitHub', href: null },
+  /*
+   * A lnkd.in shortener, as supplied. It works, but it is worth replacing with
+   * the full /in/<vanity> URL when convenient: a shortener is opaque on hover,
+   * adds a redirect hop, and is a third party that can go down between someone
+   * reading this footer and reaching the profile.
+   */
+  { label: 'LinkedIn', href: 'https://lnkd.in/ed-skQwd' },
+  { label: 'GitHub', href: 'https://github.com/JeremyAhamioje' },
   { label: 'Twitter', href: null },
   { label: 'Instagram', href: null },
 ]
 
-/**
- * Contact address.
- *
- * Defaults to the domain being connected rather than a personal inbox — a
- * portfolio should hand out an address that can be rotated or forwarded
- * without reprinting anything.
- */
-export const CONTACT_EMAIL = 'hello@jeremybuilds.online'
+/** Contact address. */
+export const CONTACT_EMAIL = 'ahamiojejeremy@gmail.com'

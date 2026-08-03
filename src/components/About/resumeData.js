@@ -6,14 +6,14 @@
  * invented employers, clients or awards: nothing here should be able to ship
  * as though it were a claim.
  *
- * The contact line is a placeholder domain, not a live address. Swap it before
- * this goes public rather than exposing a personal inbox to scrapers.
+ * The contact block below is real and live — everything above it in this file
+ * is still placeholder wording.
  */
 export const RESUME = {
   meta: {
     location: 'Available worldwide',
-    site: 'jeremyahamioje.com',
-    email: 'hello@jeremyahamioje.com',
+    site: 'jeremybuilds.online',
+    email: 'ahamiojejeremy@gmail.com',
   },
 
   name: 'Jeremy Ahamioje',

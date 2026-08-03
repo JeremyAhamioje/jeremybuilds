@@ -107,11 +107,13 @@ PostCSS resolves bare specifiers against the project root and 500s.
   **TypeScript**, **Node.js**, **Express**, **Git**. Four images went unused
   and are real tools — PostgreSQL, Firebase, MySQL, Spline — which suggests
   those were separate entries whose labels drifted.
-- Social links in `footerData.js` are `null` and render as plain text until
-  real URLs are supplied.
+- Twitter and Instagram are `null` in `footerData.js` and render as plain text
+  until real URLs are supplied. LinkedIn uses a `lnkd.in` shortener — worth
+  replacing with the full `/in/<vanity>` URL.
 - `public/jeremy-ahamioje-resume.pdf` is referenced by the About download
   button but not yet added.
-- Contact address defaults to `hello@jeremybuilds.online`.
+- Resume employment history is still placeholder wording; the contact block is
+  real.
 - Header nav links `works, about, contact`; `#services` and `#tools` exist but
   are not linked.
 - Phases 4–7 of the original hero brief (responsive pass, WebGL enhancement,

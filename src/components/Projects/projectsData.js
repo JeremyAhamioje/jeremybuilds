@@ -12,6 +12,10 @@
  * label instead of a dead "view" button — a CTA that goes nowhere costs more
  * trust than an honest "in development".
  *
+ * `cta` overrides the default "Visit site" where that would be wrong. A Figma
+ * prototype is not a site, and telling someone they are about to visit one
+ * sets them up to think the link is broken when a prototype opens instead.
+ *
  * Three entries currently use abstract stand-ins rather than real captures:
  * jeremy-blog, gaming-hub, framer-project. Drop a real capture at the matching
  * master path and rerun `npm run assets`; nothing here needs to change.
@@ -28,7 +32,7 @@ export const PROJECTS = [
     year: '2026',
     role: 'Design & Dev',
     tags: ['Next.js', 'Design System', 'Motion'],
-    href: 'https://operatorstudio.ai',
+    href: 'https://www.operatorstudio.ai/',
   },
   {
     id: 'testedtools',
@@ -40,7 +44,7 @@ export const PROJECTS = [
     year: '2026',
     role: 'Design & Dev',
     tags: ['Next.js', 'Research', 'Editorial'],
-    href: 'https://testedtools.ai',
+    href: 'https://www.testedtools.ai/',
   },
   {
     id: 'parking-arbitrage',
@@ -76,8 +80,8 @@ export const PROJECTS = [
     year: '2026',
     role: 'Product Design',
     tags: ['Figma', 'UI/UX', 'Prototyping'],
-    href: null,
-    status: 'Proposal',
+    href: 'https://www.figma.com/proto/oYGvbzLwfgwOqxRKzoxBWn/sendy?node-id=199-1828&viewport=75%2C142%2C0.81&t=AFAKBBKmYeAdJESN-1&scaling=min-zoom&content-scaling=fixed&page-id=185%3A2&starting-point-node-id=194%3A59&show-proto-sidebar=1',
+    cta: 'View prototype',
   },
   {
     id: 'framer-project',

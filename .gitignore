@@ -17,3 +17,9 @@ Gemini_Generated_Image*.png
 about-*.png
 wf-*.png
 proj-*.png
+
+# Raw footer download (master lives at assets/masters/fresco.jpg)
+download*.jpg
+
+# Supplied project captures (masters live in assets/masters/work-*.png)
+project images/
