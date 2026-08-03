@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import Hero from './components/Hero/Hero.jsx'
 import About from './components/About/About.jsx'
 import Projects from './components/Projects/Projects.jsx'
+import Tools from './components/Tools/Tools.jsx'
 import Preloader from './components/Preloader/Preloader.jsx'
 import { PRELOADER_CONFIG } from './components/Preloader/preloaderConfig.js'
 import { LoadingProvider, useLoadingManager } from './lib/loading/LoadingContext.jsx'
@@ -53,6 +54,8 @@ function AppShell() {
         <Projects />
 
         <About />
+
+        <Tools />
       </main>
     </>
   )

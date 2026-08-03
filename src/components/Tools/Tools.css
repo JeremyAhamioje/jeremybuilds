@@ -1,0 +1,397 @@
+/*
+ * Tool stack.
+ *
+ * Back to the site's near-black after the paper of the resume and the work
+ * section — the logos are the only colour here, so the ground gives them
+ * nothing to fight.
+ */
+.tools {
+  position: relative;
+  padding: clamp(4.5rem, 12vh, 9rem) var(--gutter) clamp(4rem, 10vh, 7rem);
+  background: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+}
+
+/* Faint column rules, matching the work section's grid. */
+.tools::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to right,
+    rgba(239, 233, 223, 0.05) 0 1px,
+    transparent 1px 25%
+  );
+}
+
+.tools__inner {
+  position: relative;
+  max-width: 78rem;
+  margin: 0 auto;
+}
+
+/* ------------------------------------------------------------------- head */
+
+.tools__head {
+  text-align: center;
+}
+
+.tools__eyebrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--step-meta);
+  font-variation-settings: 'wght' 500;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+.tools__eyebrow-count {
+  font-size: 0.85em;
+  color: var(--accent);
+}
+
+.tools__headline {
+  margin: clamp(0.6rem, 1.6vh, 1rem) 0 0;
+  font-family: var(--font-serif);
+  font-size: clamp(2.2rem, 5.4vw, 4.2rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.tools__headline em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+/* ------------------------------------------------------------ group title */
+
+.tools__title-block {
+  margin-top: clamp(2.2rem, 6vh, 3.6rem);
+  text-align: center;
+}
+
+/*
+ * The one place the display face appears outside the hero. Wide and heavy so
+ * the group name carries at a glance — this is the label the whole fan hangs
+ * off, and it changes every five seconds.
+ */
+.tools__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 6.5vw, 5rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  font-variation-settings: 'wdth' 110;
+}
+
+.tools__caption {
+  max-width: 42ch;
+  margin: clamp(0.5rem, 1.4vh, 0.9rem) auto 0;
+  font-family: var(--font-sans);
+  font-size: var(--step-body);
+  line-height: 1.5;
+  color: var(--ink-dim);
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------------ stage */
+
+/*
+ * Panels are stacked so one group can cross-fade into the next, which means
+ * they are out of flow and the stage cannot size itself. The height is set to
+ * the tallest arrangement rather than measured, so the controls below never
+ * jump as groups change.
+ */
+.tools__stage {
+  position: relative;
+  height: 21rem;
+  margin-top: clamp(1.8rem, 5vh, 3rem);
+}
+
+.tools__panel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.tools__fan {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* ------------------------------------------------------------------- card */
+
+.tools__card {
+  /*
+   * `--fan-lift` is a margin, not a transform: GSAP owns the transform channel
+   * on these cards and would overwrite a translate the first time a group
+   * animated, flattening the fan.
+   */
+  margin-top: var(--fan-lift, 0px);
+  width: 11.5rem;
+  padding: 1rem 1rem 1.15rem;
+  border: 1px solid rgba(239, 233, 223, 0.1);
+  border-radius: 14px;
+  background: rgba(239, 233, 223, 0.045);
+  backdrop-filter: blur(6px);
+  text-align: center;
+  transition: background 0.35s ease, border-color 0.35s ease;
+}
+
+/* Overlap, so the row reads as a held hand rather than a row of tiles. */
+.tools__card + .tools__card {
+  margin-left: -1.75rem;
+}
+
+.tools__card:hover {
+  background: rgba(239, 233, 223, 0.085);
+  border-color: rgba(239, 233, 223, 0.22);
+}
+
+/*
+ * The logo tile.
+ *
+ * Deliberately light. These logos are JPEGs with baked-in white backgrounds,
+ * so on the near-black ground they would otherwise be twenty-eight white
+ * rectangles with ragged edges. Giving them a tile makes that background
+ * intentional, and means a transparent PNG and a white JPEG render the same.
+ */
+.tools__logo {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  background: #f4f1ea;
+  overflow: hidden;
+}
+
+.tools__logo img {
+  width: 78%;
+  height: 78%;
+  object-fit: contain;
+}
+
+/*
+ * Stands in where no correct logo exists. Set in the display face so it reads
+ * as a chosen wordmark rather than a failed image — the tile is the same, so a
+ * fan mixing these with real logos still scans as one set.
+ */
+.tools__wordmark {
+  padding: 0 0.4em;
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  text-align: center;
+  color: #1c1a16;
+  font-variation-settings: 'wdth' 92;
+}
+
+.tools__name {
+  display: block;
+  margin-top: 0.75rem;
+  font-family: var(--font-sans);
+  font-size: clamp(0.62rem, 0.76vw, 0.74rem);
+  font-variation-settings: 'wght' 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+/*
+ * Space for the description is reserved whether or not it is showing, so
+ * revealing it on hover cannot resize the card and shove its neighbours.
+ */
+.tools__desc {
+  display: block;
+  min-height: 2.4em;
+  margin-top: 0.4rem;
+  font-family: var(--font-sans);
+  font-size: 0.66rem;
+  line-height: 1.35;
+  color: var(--ink-dim);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.tools__card:hover .tools__desc {
+  opacity: 1;
+}
+
+/* --------------------------------------------------------------- controls */
+
+.tools__controls {
+  margin-top: clamp(1.6rem, 4vh, 2.4rem);
+}
+
+.tools__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.tools__tab {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  padding: 0.5em 1em;
+  border: 1px solid rgba(239, 233, 223, 0.14);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-sans);
+  font-size: clamp(0.65rem, 0.8vw, 0.78rem);
+  font-variation-settings: 'wght' 500;
+  letter-spacing: 0.02em;
+  color: var(--ink-dim);
+  cursor: pointer;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.tools__tab:hover,
+.tools__tab:focus-visible {
+  color: var(--ink);
+  border-color: rgba(239, 233, 223, 0.4);
+}
+
+.tools__tab[aria-selected='true'] {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--bg);
+}
+
+.tools__tab-count {
+  font-size: 0.72em;
+  opacity: 0.65;
+}
+
+/*
+ * Progress toward the next group. Makes the autoplay legible — a carousel that
+ * advances with no warning reads as the page glitching.
+ */
+.tools__progress {
+  width: min(18rem, 60%);
+  height: 2px;
+  margin: clamp(1rem, 2.6vh, 1.5rem) auto 0;
+  background: rgba(239, 233, 223, 0.1);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tools__progress-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* --------------------------------------------------------------- compact */
+
+@media (max-width: 860px) {
+  /*
+   * No fan: the cards go to a wrapped grid. Panels stay stacked and absolute,
+   * so the stage keeps an explicit height — sized for the six-tool groups so
+   * the five-tool ones simply leave a gap rather than resizing the section.
+   */
+  .tools__stage {
+    height: 25rem;
+  }
+
+  .tools__fan {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    width: 100%;
+    max-width: 24rem;
+  }
+
+  .tools__card {
+    margin-top: 0;
+    width: calc(33.333% - 0.4rem);
+    padding: 0.7rem 0.5rem 0.8rem;
+  }
+
+  .tools__card + .tools__card {
+    margin-left: 0;
+  }
+
+  /* No hover on touch, so the description would never be reachable. */
+  .tools__desc {
+    min-height: 0;
+    margin-top: 0.25rem;
+    opacity: 1;
+    font-size: 0.58rem;
+  }
+}
+
+/* ---------------------------------------------------------------- static */
+
+/*
+ * Reduced motion: every group on screen at once. Someone who asked for less
+ * movement gets the same information, not a shorter version of it.
+ */
+.tools--static .tools__static-group {
+  margin-top: clamp(2.2rem, 6vh, 3.4rem);
+}
+
+.tools--static .tools__static-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6em;
+  margin: 0 0 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.tools__static-count {
+  font-family: var(--font-sans);
+  font-size: 0.42em;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+}
+
+.tools__static-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tools__card--flat {
+  width: auto;
+  margin-top: 0;
+}
+
+.tools__card--flat + .tools__card--flat {
+  margin-left: 0;
+}
+
+.tools--static .tools__desc {
+  opacity: 1;
+}
