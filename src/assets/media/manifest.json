@@ -93,14 +93,14 @@
     ]
   },
   "work-framer-project": {
-    "intrinsicWidth": 1600,
-    "intrinsicHeight": 1200,
-    "aspectRatio": 1.333333,
+    "intrinsicWidth": 1344,
+    "intrinsicHeight": 797,
+    "aspectRatio": 1.686324,
     "widths": [
       480,
       720,
       1024,
-      1440
+      1344
     ]
   },
   "work-shredded": {
@@ -147,9 +147,9 @@
     ]
   },
   "work-jeremy-blog": {
-    "intrinsicWidth": 1600,
-    "intrinsicHeight": 1200,
-    "aspectRatio": 1.333333,
+    "intrinsicWidth": 1463,
+    "intrinsicHeight": 720,
+    "aspectRatio": 2.031944,
     "widths": [
       480,
       720,
@@ -198,14 +198,14 @@
     ]
   },
   "work-gaming-hub": {
-    "intrinsicWidth": 1600,
-    "intrinsicHeight": 1200,
-    "aspectRatio": 1.333333,
+    "intrinsicWidth": 1307,
+    "intrinsicHeight": 800,
+    "aspectRatio": 1.63375,
     "widths": [
       480,
       720,
       1024,
-      1440
+      1307
     ]
   },
   "work-trippit": {

@@ -101,8 +101,6 @@ PostCSS resolves bare specifiers against the project root and 500s.
 
 ## Outstanding
 
-- Three projects use abstract stand-ins, not real captures: **Jeremy Blog**,
-  **Gaming Hub**, **Framer Project**.
 - Four tools have no correct logo in the supplied set and render a wordmark:
   **TypeScript**, **Node.js**, **Express**, **Git**. Four images went unused
   and are real tools — PostgreSQL, Firebase, MySQL, Spline — which suggests

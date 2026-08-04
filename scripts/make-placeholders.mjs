@@ -1,9 +1,10 @@
 /**
  * Generates abstract stand-in masters for projects with no capture yet.
  *
- * Three projects currently have no supplied image: Jeremy Blog, Gaming Hub and
- * the Framer project. Rather than leave holes in the sequence, each gets an
- * abstract composition in the site palette.
+ * CURRENTLY UNUSED — every project now has a real capture. Kept because the
+ * next project added will not, and regenerating a stand-in beats shipping a
+ * hole in the sequence while a screenshot is pending. Point `PLACEHOLDERS`
+ * below at the new `work-<slug>` id and run it.
  *
  * Deliberately NOT fake screenshots and NOT stamped "PLACEHOLDER":
  *
