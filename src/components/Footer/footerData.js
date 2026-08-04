@@ -43,3 +43,22 @@ export const SOCIALS = [
 
 /** Contact address. */
 export const CONTACT_EMAIL = 'ahamiojejeremy@gmail.com'
+
+/**
+ * WhatsApp.
+ *
+ * `wa.me` takes a number in full international form with no `+`, no spaces and
+ * no leading zero. The local number is 0806 670 4987; the leading 0 is the
+ * national trunk prefix and is REPLACED by the country code, not appended to
+ * it — so 234 + 8066704987. Passing the local form does not error, it just
+ * opens a dead chat, which is the kind of failure nobody notices until a lead
+ * has already given up.
+ */
+const WHATSAPP_NUMBER = '2348066704987'
+
+/** Pre-filled so the first message costs the visitor nothing to write. */
+const WHATSAPP_MESSAGE = 'Hi Jeremy — I saw your portfolio and would like to talk about a project.'
+
+export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
+  WHATSAPP_MESSAGE,
+)}`

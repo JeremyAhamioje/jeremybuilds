@@ -370,3 +370,54 @@
     gap: clamp(0.85rem, 2vh, 1.3rem);
   }
 }
+
+/* --------------------------------------------------------------- whatsapp */
+
+/*
+ * Outbound, so it is marked as different in kind from the anchors beside it.
+ * A rule separates it from the section links and the accent carries on hover —
+ * without that, a link that leaves the site looks like one that scrolls it.
+ */
+.site-header__whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding-left: clamp(0.6rem, 1.4vw, 1.1rem);
+  border-left: 1px solid var(--rule);
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.site-header__whatsapp svg {
+  width: 1.05em;
+  height: 1.05em;
+  flex: none;
+}
+
+.site-header__whatsapp:hover,
+.site-header__whatsapp:focus-visible {
+  color: #25d366;
+}
+
+/*
+ * Below this the header runs out of room beside the name, and the nav would
+ * wrap onto a second line over the artwork. The glyph alone is unambiguous;
+ * the accessible name survives in the label, which is only visually hidden.
+ */
+@media (max-width: 720px) {
+  .site-header__whatsapp-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .site-header__whatsapp {
+    padding-left: 0.55rem;
+  }
+}

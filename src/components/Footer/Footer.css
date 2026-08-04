@@ -206,6 +206,33 @@
   color: var(--ink);
 }
 
+/*
+ * Secondary. Outlined against the filled primary so there is still one obvious
+ * default — two solid buttons side by side make a visitor choose before they
+ * act, which is how a contact section loses people.
+ */
+.footer__cta-button--alt {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  color: var(--ink);
+  background: transparent;
+}
+
+.footer__cta-button--alt:hover,
+.footer__cta-button--alt:focus-visible {
+  /* WhatsApp green, the one place the site's palette gives way to a brand. */
+  background: #25d366;
+  border-color: #25d366;
+  color: #07301a;
+}
+
+.footer__cta-glyph {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
 /* -------------------------------------------------------------------- bar */
 
 .footer__bar {
