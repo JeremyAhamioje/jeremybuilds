@@ -42,6 +42,37 @@ npm run preview  # serve the built output
 
 ---
 
+## Deployment
+
+Vercel, configured by `vercel.json`. Framework preset `vite`, build
+`npm run build`, output `dist`. Domain: **jeremybuilds.online**.
+
+JSON takes no comments, so the reasoning lives here:
+
+**`/assets/*` is cached for a year, immutable.** Vite content-hashes
+everything it emits, so a changed file gets a changed filename — the old URL
+can never serve stale content, which is exactly the condition `immutable` is
+for. `index.html` is deliberately *not* in that rule; it must revalidate every
+time or a deploy would never reach anyone holding a cached copy.
+
+**Files in `public/` get a day, plus a week of stale-while-revalidate.** They
+keep stable URLs by design (`/jeremy-ahamioje-resume.png` is meant to be
+pasteable), so they cannot be cached immutably — replacing the résumé must
+actually reach people.
+
+**There is no SPA catch-all rewrite**, on purpose. This is one page with anchor
+links and no client-side router, so rewriting every unmatched path to
+`index.html` would turn genuine 404s into soft 200s: search engines index them,
+and a typo'd URL renders the homepage instead of saying it is wrong.
+
+**No Content-Security-Policy header.** It would need to allow the inline styles
+GSAP writes and the Cloudinary origin serving the tool logos, and a CSP written
+without testing every one of those is a policy that silently breaks the site
+for visitors while looking fine locally. Worth adding deliberately, not as a
+default.
+
+---
+
 ## Architecture, and the rules it follows
 
 **DOM first, enhancement second.** Nothing that carries content depends on
@@ -106,14 +137,14 @@ PostCSS resolves bare specifiers against the project root and 500s.
   and are real tools — PostgreSQL, Firebase, MySQL, Spline — which suggests
   those were separate entries whose labels drifted.
 - Twitter and Instagram are `null` in `footerData.js` and render as plain text
-  until real URLs are supplied. LinkedIn uses a `lnkd.in` shortener — worth
-  replacing with the full `/in/<vanity>` URL.
-- `public/jeremy-ahamioje-resume.pdf` is referenced by the About download
-  button but not yet added.
-- Resume employment history is still placeholder wording; the contact block is
-  real.
-- Header nav links `works, about, contact`; `#services` and `#tools` exist but
-  are not linked.
+  until real URLs are supplied.
+- The résumé download is a 768px-wide PNG — about 93 DPI across A4, so it is
+  fine on screen and soft in print. A PDF export would fix that and would be
+  selectable text rather than a picture of text, which matters to anything
+  that parses a CV.
+- Résumé employment history is still placeholder wording ("Placeholder
+  engagement" appears twice, in the app and in the downloadable image). The
+  contact block is real.
 - Phases 4–7 of the original hero brief (responsive pass, WebGL enhancement,
   preloader integration, performance) remain paused.
 

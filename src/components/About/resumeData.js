@@ -86,5 +86,14 @@ export const RESUME = {
   ],
 }
 
-/** Where the download button points. Drop the file in `public/` to enable it. */
-export const RESUME_PDF_URL = '/jeremy-ahamioje-resume.pdf'
+/**
+ * Where the download button points. Lives in `public/`, so it is served as-is
+ * and keeps a stable URL someone can bookmark or paste into an email.
+ *
+ * A PNG rather than a PDF, because a PNG is what was supplied. Worth knowing:
+ * it is 768px wide, which is about 93 DPI across an A4 page — fine on screen,
+ * soft if anyone prints it. A PDF export of the same layout would fix that and
+ * would also be selectable text rather than a picture of text, which matters
+ * for anything that parses a CV.
+ */
+export const RESUME_DOWNLOAD_URL = '/jeremy-ahamioje-resume.png'

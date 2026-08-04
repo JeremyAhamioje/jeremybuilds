@@ -20,9 +20,17 @@ export default function HeroContent() {
           <span className="site-header__role">Web Developer</span>
         </div>
 
+        {/*
+          Every section in page order. `services` and `tools` existed as
+          anchors for a while without being reachable from here, which is the
+          kind of gap nobody notices until someone goes looking for the thing
+          they half-remember seeing.
+        */}
         <nav className="site-header__nav" aria-label="Primary">
           <a href="#work">works</a>
           <a href="#about">about</a>
+          <a href="#services">services</a>
+          <a href="#tools">tools</a>
           <a href="#contact">contact</a>
         </nav>
       </header>

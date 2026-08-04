@@ -29,12 +29,13 @@ export const INTERESTS = [
  */
 export const SOCIALS = [
   /*
-   * A lnkd.in shortener, as supplied. It works, but it is worth replacing with
-   * the full /in/<vanity> URL when convenient: a shortener is opaque on hover,
-   * adds a redirect hop, and is a third party that can go down between someone
-   * reading this footer and reaching the profile.
+   * The tracking parameters that came with the shared URL
+   * (?utm_source=share_via&utm_content=profile&utm_medium=member_ios) are
+   * stripped. They describe how the link was copied out of the iOS app, not
+   * anything about a visitor arriving from here, so they would only tell
+   * LinkedIn that every single visit came from an iPhone share sheet.
    */
-  { label: 'LinkedIn', href: 'https://lnkd.in/ed-skQwd' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/jeremy-ahamioje-42b56725a' },
   { label: 'GitHub', href: 'https://github.com/JeremyAhamioje' },
   { label: 'Twitter', href: null },
   { label: 'Instagram', href: null },
