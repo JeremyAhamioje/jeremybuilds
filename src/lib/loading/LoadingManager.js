@@ -105,17 +105,33 @@ export function createLoadingManager(options = {}) {
     return true
   }
 
-  /** Label of whatever critical work is currently in flight, for the UI. */
+  /**
+   * Label of whatever critical work is currently in flight, for the UI.
+   *
+   * Picks the HEAVIEST running task rather than the first one registered. The
+   * status line is meant to name what the visitor is actually waiting on, and
+   * with first-wins that was decided by registration order — a one-unit font
+   * check could sit on screen while ten units of artwork downloaded behind it.
+   * Weight is already the manager's measure of how much a task matters, so the
+   * label and the bar now agree about what is holding things up.
+   *
+   * Falls back to the heaviest still-pending task when nothing is running.
+   */
   function activeLabel() {
-    let firstPending = null
+    let running = null
+    let pending = null
 
     for (const task of tasks.values()) {
       if (!task.critical || SETTLED.has(task.status)) continue
-      if (task.status === TaskStatus.RUNNING) return task.label
-      if (!firstPending) firstPending = task.label
+
+      if (task.status === TaskStatus.RUNNING) {
+        if (!running || task.weight > running.weight) running = task
+      } else if (!pending || task.weight > pending.weight) {
+        pending = task
+      }
     }
 
-    return firstPending
+    return (running ?? pending)?.label ?? null
   }
 
   function buildSnapshot() {

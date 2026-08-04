@@ -27,6 +27,26 @@ export function registerCriticalTasks(manager) {
 function registerHeroAssetTasks(manager) {
   manager.registerTask({ id: 'arm-b', label: 'artwork', weight: 5 })
   manager.registerTask({ id: 'arm-a', label: 'artwork', weight: 5 })
+
+  /*
+   * Marked in flight here, not by the hero.
+   *
+   * The hero used to call startTask itself, and it silently did nothing: React
+   * runs child effects BEFORE parent effects, so the hero's effect fired before
+   * this manifest existed, and startTask on an unregistered id returns without
+   * a word. The arms went straight from PENDING to COMPLETE and were never
+   * RUNNING — so the status line could never say "artwork", even though the two
+   * images are ten of the twelve units of critical weight and are downloading
+   * the whole time. The preloader read "typography" for almost the entire load.
+   *
+   * Doing it here is also more truthful than the hero doing it: the browser
+   * starts fetching both images the moment the <picture> elements commit, which
+   * is this same tick. They are in flight from the start.
+   *
+   * The hero still owns COMPLETION — only it knows when an image has decoded.
+   */
+  manager.startTask('arm-b')
+  manager.startTask('arm-a')
 }
 
 function registerShellTasks(manager) {

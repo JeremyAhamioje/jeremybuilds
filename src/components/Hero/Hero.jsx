@@ -32,11 +32,14 @@ export default function Hero() {
   const completeArm = useCallback((id) => () => manager.completeTask(id), [manager])
   const failArm = useCallback((id) => (error) => manager.failTask(id, error), [manager])
 
-  // Mark the asset tasks as in-flight so the preloader can name what it waits on.
-  useEffect(() => {
-    manager.startTask('arm-a')
-    manager.startTask('arm-b')
-  }, [manager])
+  /*
+   * The arms are marked in flight by the loading bootstrap, not here.
+   *
+   * This component used to call startTask for both, and it never once worked:
+   * child effects run before parent effects, so this fired before the manifest
+   * existed and startTask on an unknown id returns silently. The hero still
+   * owns completion below — only it knows when an image has actually decoded.
+   */
 
   /*
    * Build the scroll sequence after layout, before paint, so the pin spacer is
