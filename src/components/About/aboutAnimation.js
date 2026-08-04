@@ -66,15 +66,15 @@ export function createAboutAnimation(root) {
 
     /* --------------------------------------------------------- the sheet */
 
-    if (sheet) {
-      gsap.from(sheet, {
-        y: 40,
-        autoAlpha: 0,
-        duration: 1.1,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: sheet, start: 'top 85%', once: true },
-      })
-    }
+    /*
+     * The sheet does not animate. It used to rise 40px and fade in on entry;
+     * the résumé should read as a physical document already on the page, and
+     * a card that slides in undercuts that every time you reach it.
+     *
+     * The micro-animations INSIDE it stay — the name fading in and the skill
+     * titles' highlights wiping across are the detail this section was asked
+     * for. Ink arriving on paper is a different thing from the paper moving.
+     */
 
     /* ----------------------------------------------------------- the name */
 
@@ -84,9 +84,12 @@ export function createAboutAnimation(root) {
         autoAlpha: 0,
         duration: 0.8,
         ease: 'power3.out',
-        // Slightly after the sheet lands, so it reads as ink appearing on
-        // paper rather than the two arriving as one block.
+        // A beat after the sheet comes into view. The sheet itself no longer
+        // animates, so this is what makes the name read as ink arriving on
+        // paper that was already there.
         delay: 0.18,
+        // Still triggered off the sheet: the name sits high in it, and keying
+        // off the name alone would fire before the document is really on screen.
         scrollTrigger: { trigger: sheet ?? name, start: 'top 85%', once: true },
       })
     }

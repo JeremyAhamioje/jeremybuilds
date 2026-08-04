@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { MEDIA_ASSETS } from '../../lib/assets/mediaAssets.js'
 import { useMediaQuery } from '../../lib/useMediaQuery.js'
 import { CATEGORIES, countFor, filterProjects } from './projectsData.js'
@@ -46,14 +46,19 @@ export default function Projects() {
 
   const handleIndexChange = useCallback((index) => setActiveIndex(index), [])
 
+  const animationRef = useRef(null)
+
   /*
    * Rebuilds when the filter changes or the layout mode flips — the set being
    * sequenced is different, so the pin length and cycle boundaries are too.
    */
   useLayoutEffect(() => {
-    if (!canSequence) return undefined
+    if (!canSequence) {
+      animationRef.current = null
+      return undefined
+    }
 
-    return createProjectsAnimation(
+    const animation = createProjectsAnimation(
       {
         section: sectionRef.current,
         intro: introRef.current,
@@ -65,7 +70,40 @@ export default function Projects() {
       projects.length,
       handleIndexChange,
     )
+
+    animationRef.current = animation
+    return animation.destroy
   }, [canSequence, projects, handleIndexChange])
+
+  /*
+   * Choosing a filter puts you on that set's first project.
+   *
+   * Not cosmetic. The pin length is a function of how many projects are in the
+   * set, so a scroll position two-thirds through twenty projects is beyond the
+   * END of a five-project section — without this, filtering from deep in the
+   * sequence skipped the whole thing and landed on About.
+   *
+   * Runs as an effect rather than in the click handler because it has to
+   * happen AFTER the layout effect above has rebuilt the sequence and the new
+   * pin exists; seeking against the old trigger would just move to the wrong
+   * place. Skipped on mount — arriving at the page should not scroll anyone.
+   */
+  const mountedRef = useRef(false)
+
+  useEffect(() => {
+    if (!mountedRef.current) {
+      mountedRef.current = true
+      return
+    }
+
+    if (canSequence) {
+      animationRef.current?.scrollToFirst()
+    } else {
+      // List mode has no pin, but the list still gets shorter — bring the top
+      // of the section back into view rather than leaving a stale offset.
+      sectionRef.current?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    }
+  }, [category, canSequence])
 
   const total = String(projects.length).padStart(2, '0')
 

@@ -19,9 +19,15 @@
   display: flex;
   flex-direction: column;
   gap: clamp(1.2rem, 2.6vh, 2rem);
-  /* Sticks while the sheet scrolls past — the sheet is the longer object. */
-  position: sticky;
-  top: clamp(3rem, 12vh, 8rem);
+  /*
+   * Deliberately NOT sticky.
+   *
+   * Pinning this column while the résumé scrolled past was the source of the
+   * sheet appearing to drift: nothing was animating it, but holding one column
+   * still makes the other read as moving. Both columns scroll together, so the
+   * résumé sits on the page like a sheet of paper rather than sliding behind
+   * the headline.
+   */
 }
 
 .about__headline {

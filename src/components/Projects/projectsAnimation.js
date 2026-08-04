@@ -58,11 +58,21 @@ export const PROJECTS_MOTION = {
  * @param {object} refs
  * @param {number} projectCount
  * @param {(index: number) => void} onIndexChange - discrete, for React chrome
- * @returns {() => void} cleanup
+ * @returns {{ destroy: () => void, scrollToFirst: () => void }}
  */
 export function createProjectsAnimation(refs, projectCount, onIndexChange) {
   const { section, intro, frame, detail, slides, details } = refs
-  if (!section || !frame || projectCount === 0) return () => {}
+
+  /*
+   * Assigned by the sequence branch below. Stays a no-op under reduced motion
+   * and on narrow screens, where there is no pin to reposition — the list
+   * fallback needs no seeking.
+   */
+  let seekFirst = () => {}
+
+  if (!section || !frame || projectCount === 0) {
+    return { destroy: () => {}, scrollToFirst: () => {} }
+  }
 
   const mm = gsap.matchMedia()
 
@@ -228,6 +238,37 @@ export function createProjectsAnimation(refs, projectCount, onIndexChange) {
     // onUpdate fires.
     setActive(0)
 
+    /*
+     * Land on the first project of the current set.
+     *
+     * Filtering changes the pin length — twenty projects pin for 12.5 viewport
+     * heights, five for 4.25 — so an absolute scroll position that sat at
+     * project 6 of 20 is PAST THE END of the filtered section entirely, and the
+     * visitor gets dropped into whatever follows. Rebuilding the sequence is
+     * not enough on its own; the scroll position has to be moved with it.
+     *
+     * Targets just past the opening rather than the section top, so choosing a
+     * filter shows the work immediately instead of replaying the headline and
+     * the frame opening every time.
+     *
+     * Instant, not smooth: the scrub still eases the timeline into place over
+     * its own 0.7s, so the result reads as a transition rather than a jump,
+     * and a smooth scroll would fight the scrub the whole way.
+     */
+    seekFirst = () => {
+      // The previous pin spacer has just been removed and this one added, so
+      // every start/end on the page has moved. Measure after that settles.
+      ScrollTrigger.refresh()
+
+      const trigger = timeline.scrollTrigger
+      if (!trigger) return
+
+      const span = trigger.end - trigger.start
+      const target = trigger.start + span * Math.min(0.999, key.detailIn + 0.002)
+
+      window.scrollTo({ top: target, behavior: 'instant' })
+    }
+
     // Dev handle for inspecting the sequence from automation.
     if (import.meta.env.DEV) window.__projectsTimeline = timeline
 
@@ -237,5 +278,8 @@ export function createProjectsAnimation(refs, projectCount, onIndexChange) {
     }
   })
 
-  return () => mm.revert()
+  return {
+    destroy: () => mm.revert(),
+    scrollToFirst: () => seekFirst(),
+  }
 }
