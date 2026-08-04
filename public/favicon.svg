@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <!--
+    The site's own mark, at favicon scale.
+
+    Reuses the hero's `</>` geometry rather than a wordmark: at 16px an initial
+    is unreadable and a full name is worse, but the bracket silhouette survives.
+    Carries its own near-black ground because a tab strip may be light or dark
+    and a transparent glyph disappears against one of them.
+
+    The opening bracket keeps the accent, exactly as it does in the hero — one
+    coloured element, so the mark reads as authored rather than as a logo.
+
+    Geometry is the hero's 148x84 viewBox translated into a 180x180 square:
+    scaled 1.05 and centred, with the stroke opened up so it holds at 16px.
+  -->
+  <rect width="180" height="180" rx="38" fill="#0a0908"/>
+  <g fill="none" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"
+     transform="translate(12.3, 45.9) scale(1.05)">
+    <polyline points="47,17 15,42 47,67" stroke="#de5a24"/>
+    <line x1="65" y1="72" x2="83" y2="12" stroke="#efe9df"/>
+    <polyline points="101,17 133,42 101,67" stroke="#efe9df"/>
+  </g>
+</svg>

@@ -3,7 +3,59 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Jeremy — Portfolio</title>
+
+    <title>Jeremy Ahamioje — Web Developer &amp; Designer</title>
+    <meta
+      name="description"
+      content="Jeremy Ahamioje builds interactive experiences for the web — design and full-stack development, from interface and motion through to the services behind them."
+    />
+    <meta name="author" content="Jeremy Ahamioje" />
+
+    <!--
+      Canonical is the www host: the apex 308-redirects to it, so www is what
+      actually serves and what search engines should be told to index. Pointing
+      this at the apex would name a URL that never returns a page.
+    -->
+    <link rel="canonical" href="https://www.jeremybuilds.online/" />
+
+    <!--
+      SVG favicon, no .ico. Browsers were requesting /favicon.ico and getting a
+      404 on every load; a single scalable icon covers every size instead of a
+      bitmap ladder. Safari's pinned-tab format wants a separate mask, which is
+      not worth a second file for a portfolio.
+    -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <meta name="theme-color" content="#0a0908" />
+
+    <!--
+      Link previews. WhatsApp is now a primary CTA, which means this URL gets
+      pasted into chats — and a portfolio link that unfurls as a bare domain
+      with no image is a worse first impression than the site it points to.
+
+      The image is a capture of the real hero rather than an invented graphic,
+      so the preview and the page agree.
+    -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Jeremy Ahamioje" />
+    <meta property="og:url" content="https://www.jeremybuilds.online/" />
+    <meta property="og:title" content="Jeremy Ahamioje — Web Developer &amp; Designer" />
+    <meta
+      property="og:description"
+      content="Design and full-stack development. Interactive experiences for the web, where interface, motion and code meet."
+    />
+    <meta property="og:image" content="https://www.jeremybuilds.online/og.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Two sculpted arms reaching toward a code symbol, over the words Creative Web Developer." />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Jeremy Ahamioje — Web Developer &amp; Designer" />
+    <meta
+      name="twitter:description"
+      content="Design and full-stack development. Interactive experiences for the web, where interface, motion and code meet."
+    />
+    <meta name="twitter:image" content="https://www.jeremybuilds.online/og.jpg" />
   </head>
   <body>
     <div id="root"></div>
