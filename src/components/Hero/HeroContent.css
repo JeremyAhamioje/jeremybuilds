@@ -235,6 +235,19 @@
  * out to the left and continues BEHIND the figures rather than stopping at
  * them — the numerals interrupting a line that carries on is what makes the
  * badge read as a composed mark instead of a label with a dash next to it.
+ *
+ * Faded at its left end rather than drawn flat.
+ *
+ * It overhangs the badge by 170-180px on a laptop, into empty artwork, and at
+ * a flat opacity that end was a hard stop in mid-air — the eye read it as a
+ * stray rule pointing at the star rather than as a line the numerals sit on.
+ * The header rule gets away with hard ends because it spans the full gutter
+ * and is anchored at both sides; this one is anchored at neither, so it has to
+ * emerge from the dark instead of starting in it.
+ *
+ * Zero-alpha ink rather than `transparent` as the first stop: `transparent`
+ * is transparent BLACK, and interpolating to it drags a warm hairline through
+ * grey on the way out.
  */
 .date-badge::before {
   content: '';
@@ -243,7 +256,7 @@
   right: 22%;
   width: clamp(6rem, 26vw, 24rem);
   height: 1px;
-  background: var(--rule);
+  background: linear-gradient(to right, rgba(239, 233, 223, 0) 0%, var(--rule) 58%);
 }
 
 .date-badge__star {
