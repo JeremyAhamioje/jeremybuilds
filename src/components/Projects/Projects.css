@@ -405,6 +405,12 @@
   display: block;
   height: auto;
   padding-block: clamp(3.5rem, 9vh, 6rem);
+  /*
+   * Room under the last card for the floating collapse control, which is fixed
+   * to the viewport and would otherwise sit on top of that card's CTA exactly
+   * when the visitor reaches it.
+   */
+  padding-bottom: calc(clamp(3.5rem, 9vh, 6rem) + 4.5rem + env(safe-area-inset-bottom, 0px));
 }
 
 .projects--list .projects__intro {
@@ -468,4 +474,22 @@
 .projects__card .projects__cta,
 .projects__card .projects__status {
   margin-top: clamp(0.9rem, 2.4vh, 1.3rem);
+}
+
+/*
+ * "Showing 4 of 20." Set as a quiet caption rather than hidden outright.
+ *
+ * It has to exist for assistive tech — the floating pill is the visible
+ * affordance, but someone moving through the list by heading otherwise hits the
+ * fourth project and has no way to know sixteen more are behind a control. Once
+ * it is in the document it may as well be legible, and a truncated list that
+ * says so is more trustworthy than one that just stops.
+ */
+.projects__truncation {
+  margin: clamp(1.8rem, 5vh, 2.6rem) 0 0;
+  font-family: var(--font-sans);
+  font-size: clamp(0.68rem, 0.8vw, 0.76rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-muted);
 }

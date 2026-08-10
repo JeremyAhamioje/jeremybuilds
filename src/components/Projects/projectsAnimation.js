@@ -58,20 +58,21 @@ export const PROJECTS_MOTION = {
  * @param {object} refs
  * @param {number} projectCount
  * @param {(index: number) => void} onIndexChange - discrete, for React chrome
- * @returns {{ destroy: () => void, scrollToFirst: () => void }}
+ * @returns {{ destroy: () => void, scrollToFirst: () => void, scrollPastEnd: () => void }}
  */
 export function createProjectsAnimation(refs, projectCount, onIndexChange) {
   const { section, intro, frame, detail, slides, details } = refs
 
   /*
-   * Assigned by the sequence branch below. Stays a no-op under reduced motion
+   * Assigned by the sequence branch below. Stay no-ops under reduced motion
    * and on narrow screens, where there is no pin to reposition — the list
    * fallback needs no seeking.
    */
   let seekFirst = () => {}
+  let seekEnd = () => {}
 
   if (!section || !frame || projectCount === 0) {
-    return { destroy: () => {}, scrollToFirst: () => {} }
+    return { destroy: () => {}, scrollToFirst: () => {}, scrollPastEnd: () => {} }
   }
 
   const mm = gsap.matchMedia()
@@ -269,6 +270,30 @@ export function createProjectsAnimation(refs, projectCount, onIndexChange) {
       window.scrollTo({ top: target, behavior: 'instant' })
     }
 
+    /*
+     * Leave the section entirely.
+     *
+     * The sequence has no list to shorten — its length IS the pin, 12.5
+     * viewport heights at twenty projects — so "collapse" here means closing it
+     * up and handing the visitor to what follows.
+     *
+     * `trigger.end` is where the pin RELEASES, at which point the section has
+     * returned to flow and still fills the viewport on its final frame. Landing
+     * there would look like the button did nothing, so the section's own height
+     * is added to clear it. Measured rather than assumed to be 100vh: the
+     * section is sized in `svh`, which is not the same number on a phone.
+     *
+     * Instant, unlike a normal in-page jump. A smooth scroll would drag the
+     * scrubbed timeline through every remaining project on the way out, which
+     * is precisely the thing the visitor just asked to stop.
+     */
+    seekEnd = () => {
+      const trigger = timeline.scrollTrigger
+      if (!trigger) return
+
+      window.scrollTo({ top: trigger.end + section.offsetHeight, behavior: 'instant' })
+    }
+
     // Dev handle for inspecting the sequence from automation.
     if (import.meta.env.DEV) window.__projectsTimeline = timeline
 
@@ -281,5 +306,6 @@ export function createProjectsAnimation(refs, projectCount, onIndexChange) {
   return {
     destroy: () => mm.revert(),
     scrollToFirst: () => seekFirst(),
+    scrollPastEnd: () => seekEnd(),
   }
 }

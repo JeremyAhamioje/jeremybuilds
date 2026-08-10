@@ -3,10 +3,21 @@ import { MEDIA_ASSETS } from '../../lib/assets/mediaAssets.js'
 import { useMediaQuery } from '../../lib/useMediaQuery.js'
 import { CATEGORIES, countFor, filterProjects } from './projectsData.js'
 import { createProjectsAnimation } from './projectsAnimation.js'
+import ProjectsCollapse from './ProjectsCollapse.jsx'
 import './Projects.css'
 
 /** Below this, or with motion reduced, the section is an ordinary list. */
 const SEQUENCE_QUERY = '(min-width: 901px) and (prefers-reduced-motion: no-preference)'
+
+/**
+ * How many cards the list shows before asking.
+ *
+ * The list is the phone's shape, and at twenty projects it runs to roughly
+ * fourteen screens of nothing but work — long enough that the sections after it
+ * may as well not exist. Four is a browsable sample: enough to show range and
+ * to make the case for pressing, short enough to scroll past.
+ */
+const PREVIEW_COUNT = 4
 
 /**
  * Selected work.
@@ -31,6 +42,8 @@ export default function Projects() {
   const canSequence = useMediaQuery(SEQUENCE_QUERY)
   const [category, setCategory] = useState('all')
   const [activeIndex, setActiveIndex] = useState(0)
+  const [expanded, setExpanded] = useState(false)
+  const [inView, setInView] = useState(false)
 
   const projects = useMemo(() => filterProjects(category), [category])
 
@@ -105,6 +118,97 @@ export default function Projects() {
     }
   }, [category, canSequence])
 
+  /* ------------------------------------------------------- collapse control */
+
+  /*
+   * Is the section on screen? This is the whole gate for the floating control —
+   * it must not hover over the hero or the footer.
+   *
+   * An observer rather than a scroll listener because the section's geometry is
+   * not stable: while pinned it is `position: fixed`, so a measured top would be
+   * meaningless. Intersection reports what is actually visible either way.
+   *
+   * Re-runs on the breakpoint flip: the two shapes are different markup, so the
+   * node being watched is genuinely a different element.
+   */
+  useEffect(() => {
+    const node = sectionRef.current
+    if (!node || typeof IntersectionObserver === 'undefined') return undefined
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      /*
+       * Inset root, NOT a ratio threshold.
+       *
+       * `threshold` measures how much of the ELEMENT is showing, and the
+       * expanded list is around fourteen screens tall — a full viewport of it
+       * is a ratio of about 0.07, so any threshold meaningful for the pinned
+       * section would keep the control hidden for the entire list, which is
+       * exactly where it is needed most.
+       *
+       * Shrinking the root asks a question that means the same thing at both
+       * heights: is the section anywhere in the middle 60% of the screen? A
+       * sliver at the seam between two sections is not, so it still cannot
+       * flicker there.
+       */
+      { threshold: 0, rootMargin: '-20% 0px -20% 0px' },
+    )
+
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [canSequence])
+
+  /*
+   * Restoring position after a collapse.
+   *
+   * Removing sixteen cards from under someone reading card eighteen shortens
+   * the document below their scroll offset, and the browser's own response is
+   * to clamp them to the new maximum — which is the FOOTER. So the section has
+   * to be brought back deliberately, and only on a collapse: expanding adds
+   * content below the visitor, where it belongs, and moving them then would
+   * undo the press they just made.
+   *
+   * Layout effect, not effect: this has to land before paint, or the clamped
+   * position is visible for a frame as a lurch to the bottom of the page.
+   */
+  const collapsingRef = useRef(false)
+
+  useLayoutEffect(() => {
+    if (!collapsingRef.current) return
+    collapsingRef.current = false
+    sectionRef.current?.scrollIntoView({ block: 'start', behavior: 'instant' })
+  }, [expanded])
+
+  const handleToggle = useCallback(() => {
+    // The sequence has no list to shorten — leaving it IS the collapse.
+    if (canSequence) {
+      animationRef.current?.scrollPastEnd()
+      return
+    }
+
+    if (expanded) collapsingRef.current = true
+    setExpanded(!expanded)
+  }, [canSequence, expanded])
+
+  /*
+   * In the list, there is nothing to collapse until the set is longer than the
+   * preview. In the sequence, the control waits until the visitor is genuinely
+   * into the work — offering an exit during the opening would undercut the
+   * reveal before it has said anything.
+   */
+  const controlVisible =
+    inView && (canSequence ? activeIndex >= 1 : projects.length > PREVIEW_COUNT)
+
+  const collapseControl = (
+    <ProjectsCollapse
+      visible={controlVisible}
+      expanded={expanded}
+      sequence={canSequence}
+      total={projects.length}
+      onToggle={handleToggle}
+    />
+  )
+
   const total = String(projects.length).padStart(2, '0')
 
   const filters = (
@@ -145,92 +249,119 @@ export default function Projects() {
   /* ------------------------------------------------------------------ list */
 
   if (!canSequence) {
-    return (
-      <section className="projects projects--list" id="work" ref={sectionRef}>
-        <div className="projects__viewport">
-          {intro}
-          {filters}
+    // Only the preview is mounted while collapsed. Rendering all twenty and
+    // hiding the tail with CSS would still download every image and still cost
+    // the layout, which is most of what makes the section expensive on a phone.
+    const shown = expanded ? projects : projects.slice(0, PREVIEW_COUNT)
 
-          <ol className="projects__list">
-            {projects.map((project, index) => (
-              <li className="projects__card" key={project.id}>
-                <ProjectImage project={project} eager={index === 0} sizes="92vw" />
-                <ProjectMeta project={project} />
-                <h3 className="projects__title">{project.title}</h3>
-                <ProjectTags project={project} />
-                <p className="projects__summary">{project.summary}</p>
-                <ProjectLink project={project} />
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
+    return (
+      <>
+        <section className="projects projects--list" id="work" ref={sectionRef}>
+          <div className="projects__viewport">
+            {intro}
+            {filters}
+
+            <ol className="projects__list" id="projects-list">
+              {shown.map((project, index) => (
+                <li className="projects__card" key={project.id}>
+                  <ProjectImage project={project} eager={index === 0} sizes="92vw" />
+                  <ProjectMeta project={project} />
+                  <h3 className="projects__title">{project.title}</h3>
+                  <ProjectTags project={project} />
+                  <p className="projects__summary">{project.summary}</p>
+                  <ProjectLink project={project} />
+                </li>
+              ))}
+            </ol>
+
+            {/*
+              Announced rather than shown. The floating control is the visible
+              affordance, but a screen reader user moving through the list by
+              heading gets no hint that it stops early, and the count is the
+              part that makes the control worth pressing.
+            */}
+            {projects.length > PREVIEW_COUNT && (
+              <p className="projects__truncation" role="status">
+                {expanded
+                  ? `Showing all ${projects.length} projects.`
+                  : `Showing ${shown.length} of ${projects.length} projects.`}
+              </p>
+            )}
+          </div>
+        </section>
+
+        {collapseControl}
+      </>
     )
   }
 
   /* -------------------------------------------------------------- sequence */
 
   return (
-    <section className="projects" id="work" ref={sectionRef}>
-      <div className="projects__viewport">
-        {intro}
-        {filters}
+    <>
+      <section className="projects" id="work" ref={sectionRef}>
+        <div className="projects__viewport">
+          {intro}
+          {filters}
 
-        <div className="projects__stage">
-          <div className="projects__frame" ref={frameRef}>
-            {projects.map((project, index) => (
-              <figure
-                className="projects__slide"
-                key={project.id}
-                ref={(node) => {
-                  slideRefs.current[index] = node
-                }}
-              >
-                <ProjectImage project={project} eager={index === 0} sizes="62vw" />
-              </figure>
-            ))}
-          </div>
-
-          <div className="projects__detail" ref={detailRef}>
-            <p className="projects__counter">
-              <span className="projects__counter-current">
-                {String(activeIndex + 1).padStart(2, '0')}
-              </span>
-              <span className="projects__counter-total">/ {total}</span>
-            </p>
-
-            <div className="projects__detail-stack">
+          <div className="projects__stage">
+            <div className="projects__frame" ref={frameRef}>
               {projects.map((project, index) => (
-                <div
-                  className="projects__detail-item"
+                <figure
+                  className="projects__slide"
                   key={project.id}
                   ref={(node) => {
-                    detailRefs.current[index] = node
+                    slideRefs.current[index] = node
                   }}
-                  aria-hidden={index !== activeIndex}
                 >
-                  <ProjectMeta project={project} />
-                  <h3 className="projects__title">{project.title}</h3>
-                  <ProjectTags project={project} />
-                  <p className="projects__summary">{project.summary}</p>
-                  <ProjectLink project={project} tabIndex={index === activeIndex ? 0 : -1} />
-                </div>
+                  <ProjectImage project={project} eager={index === 0} sizes="62vw" />
+                </figure>
               ))}
             </div>
-          </div>
-        </div>
 
-        <ol className="projects__dots" aria-hidden="true">
-          {projects.map((project, index) => (
-            <li
-              key={project.id}
-              className="projects__dot"
-              data-active={index === activeIndex ? 'true' : 'false'}
-            />
-          ))}
-        </ol>
-      </div>
-    </section>
+            <div className="projects__detail" ref={detailRef}>
+              <p className="projects__counter">
+                <span className="projects__counter-current">
+                  {String(activeIndex + 1).padStart(2, '0')}
+                </span>
+                <span className="projects__counter-total">/ {total}</span>
+              </p>
+
+              <div className="projects__detail-stack">
+                {projects.map((project, index) => (
+                  <div
+                    className="projects__detail-item"
+                    key={project.id}
+                    ref={(node) => {
+                      detailRefs.current[index] = node
+                    }}
+                    aria-hidden={index !== activeIndex}
+                  >
+                    <ProjectMeta project={project} />
+                    <h3 className="projects__title">{project.title}</h3>
+                    <ProjectTags project={project} />
+                    <p className="projects__summary">{project.summary}</p>
+                    <ProjectLink project={project} tabIndex={index === activeIndex ? 0 : -1} />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <ol className="projects__dots" aria-hidden="true">
+            {projects.map((project, index) => (
+              <li
+                key={project.id}
+                className="projects__dot"
+                data-active={index === activeIndex ? 'true' : 'false'}
+              />
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {collapseControl}
+    </>
   )
 }
 

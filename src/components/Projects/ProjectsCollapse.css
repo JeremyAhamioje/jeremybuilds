@@ -1,0 +1,150 @@
+/*
+ * Floating control for the work section.
+ *
+ * Carries its own copy of the paper palette rather than reading the section's:
+ * it renders as a SIBLING of `.projects` (see the component note on pinning),
+ * so the section's local tokens are not in scope. Duplicated on purpose, and
+ * kept next to the values it mirrors.
+ */
+.projects-collapse {
+  --paper: #f0ece3;
+  --paper-ink: #1c1a16;
+
+  position: fixed;
+  left: 50%;
+  /* Clears the phone home indicator; falls back to the plain inset elsewhere. */
+  bottom: calc(clamp(1rem, 3vh, 1.75rem) + env(safe-area-inset-bottom, 0px));
+  z-index: 40;
+  transform: translateX(-50%);
+  /* The wrapper is a positioning shell — only the button takes the pointer. */
+  pointer-events: none;
+}
+
+/*
+ * In the sequence, out of the centre lane entirely.
+ *
+ * The pinned section keeps its filter row bottom-centred, and centred here the
+ * two occupied the same band exactly — measured at 1440x900, filters at
+ * 439-1001 x 839-864 and the pill at 667-773 x 839-873, a direct hit. The
+ * corner also puts the control on the same side as the detail column it acts
+ * on, and leaves the artwork's left edge and the progress dots alone.
+ *
+ * Scoped to the sequence's own query rather than a bare width: with motion
+ * reduced a wide viewport still renders the LIST, whose filters are in normal
+ * flow and never reach the bottom of the screen.
+ */
+@media (min-width: 901px) and (prefers-reduced-motion: no-preference) {
+  .projects-collapse {
+    left: auto;
+    right: var(--gutter);
+    transform: none;
+  }
+}
+
+.projects-collapse__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  padding: 0.72em 1.25em;
+  border: 1px solid rgba(240, 236, 227, 0.14);
+  border-radius: 999px;
+  background: var(--paper-ink);
+  color: var(--paper);
+  font-family: var(--font-sans);
+  font-size: clamp(0.72rem, 0.86vw, 0.82rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  cursor: pointer;
+  /*
+   * Two shadows: a tight one to seat the pill on the paper, and a wide soft one
+   * so it still separates from a project image passing underneath it.
+   */
+  box-shadow: 0 1px 2px rgba(28, 26, 22, 0.18), 0 10px 30px rgba(28, 26, 22, 0.22);
+
+  /* Hidden state — see the visibility block below. */
+  opacity: 0;
+  transform: translateY(0.75rem) scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1),
+    background 0.25s ease;
+}
+
+.projects-collapse[data-visible='true'] .projects-collapse__button {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/*
+ * Hover is gated on a device that actually has one.
+ *
+ * Touch browsers apply :hover on tap and hold it until something else is
+ * tapped — so an ungated rule leaves the pill stuck in its accent colour after
+ * every press, which reads as a selected state that was never chosen. Keyboard
+ * focus is separate and always applies.
+ */
+@media (hover: hover) {
+  .projects-collapse__button:hover {
+    background: var(--accent);
+  }
+}
+
+.projects-collapse__button:focus-visible {
+  background: var(--accent);
+}
+
+.projects-collapse__button:focus-visible {
+  outline: 2px solid var(--paper-ink);
+  outline-offset: 3px;
+}
+
+/* Tap feedback — the only thing a phone gets in place of hover. */
+.projects-collapse__button:active {
+  transform: translateY(0) scale(0.97);
+}
+
+/*
+ * The remaining count, as a chip rather than parenthesised text. "Show all 20"
+ * is the whole reason to press the button, so the number is given its own
+ * shape instead of being buried in the label.
+ */
+.projects-collapse__count {
+  padding: 0.15em 0.5em;
+  border-radius: 999px;
+  background: rgba(240, 236, 227, 0.15);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.92em;
+}
+
+.projects-collapse__chevron {
+  width: 0.85em;
+  height: 0.85em;
+  flex: none;
+  transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+/*
+ * The chevron points where the press will take you: down into the rest of the
+ * list while collapsed, back up to the top of the section once expanded.
+ */
+.projects-collapse[data-collapsing='true'] .projects-collapse__chevron {
+  transform: rotate(180deg);
+}
+
+/*
+ * With motion reduced the control still appears and disappears — it just does
+ * so without travelling. Removing the transition entirely would make it blink
+ * into place, which reads as a glitch rather than as a quieter animation.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .projects-collapse__button,
+  .projects-collapse__chevron {
+    transition: opacity 0.2s ease;
+    transform: none;
+  }
+
+  .projects-collapse[data-visible='true'] .projects-collapse__button {
+    transform: none;
+  }
+}
