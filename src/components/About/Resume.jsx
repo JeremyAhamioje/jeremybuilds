@@ -68,7 +68,9 @@ export default function Resume() {
                   <span className="resume__place">{entry.place}</span>
                 </div>
                 <h5 className="resume__title">{entry.title}</h5>
-                <p className="resume__org">{entry.org}</p>
+                {/* Optional: entries with no employer named omit the line
+                    rather than printing an empty one. */}
+                {entry.org ? <p className="resume__org">{entry.org}</p> : null}
                 <p className="resume__summary">{entry.summary}</p>
               </li>
             ))}
