@@ -53,8 +53,6 @@ export default function About() {
               className="about__download"
               href={RESUME_DOWNLOAD_URL}
               download
-              // The PDF is not in the repo yet; the button is wired and inert
-              // until it lands in public/.
             >
               <span className="about__download-label">Download résumé</span>
               <svg

@@ -90,22 +90,34 @@ export const RESUME = {
  * Where the download button points. Lives in `public/`, so it is served as-is
  * and keeps a stable URL someone can bookmark or paste into an email.
  *
- * RENDERED FROM THIS COMPONENT, not drawn separately — 1992x2419, captured
- * from `.resume` in a real browser at 3x. That matters for a reason beyond
- * sharpness: the file and the page cannot disagree. The version it replaced was
- * a separate 768px image, and when the two employment entries above lost their
- * placeholder org line, that file went on advertising it to anyone who
- * downloaded the CV.
+ * A PDF, printed from this component by Chromium — so it carries REAL TEXT, not
+ * a picture of it: 1035 characters an applicant tracking system can extract, and
+ * a recruiter can select and paste. One A4 page, 210x297mm exactly.
  *
- * So REGENERATE IT whenever this data changes. Isolate `.resume` (detach it
- * from the scroll-driven page, drop the tilt, the radius and the shadow), pin
- * its width to the natural CSS measure inside a `zoom: 3` context, and force
- * the portrait's `sizes` up so it fetches its 900px source rather than the
- * 240px one the layout normally asks for.
+ * `jeremy-ahamioje-resume.png` sits beside it, generated from the same render at
+ * 1992x2419 for anyone holding the older link. BOTH come from this component, so
+ * both go stale together — see below.
  *
- * Still a picture of text. A PDF export would be selectable and parseable,
- * which is what applicant tracking systems actually read — worth doing, and
- * the only reason this is a PNG is that a PNG is what the download has always
- * been. At 241 DPI across A4 it is at least sound to print now.
+ * REGENERATING (do this whenever the data above changes, or the file starts
+ * claiming things the page no longer does — that is exactly how the placeholder
+ * org lines outlived their removal from the page):
+ *
+ *   1. Isolate `.resume` as the only child of <body>. Every colour token is
+ *      declared on `.resume` itself, so it survives the move. Drop the page's
+ *      -0.5deg tilt, the radius and the shadow — screen details, not print ones.
+ *   2. Force the portrait's `sizes` to 900px, or it prints the 240px source the
+ *      layout normally asks for.
+ *   3. For the PDF, set the sheet to 582px wide and FREEZE the computed type and
+ *      grid values inline. Chromium prints against a viewport of paperWidth/scale
+ *      — 582px — which would otherwise trip the sheet's own `max-width: 900px`
+ *      rules into a single column and re-resolve every vw-based clamp against
+ *      582px instead of the design's 1600px. Inline px has nothing left to
+ *      re-resolve, and outranks a media query.
+ *      Then `page.pdf({ width: '210mm', height: '297mm', scale: 793.7 / 582 })`.
+ *      582 is not arbitrary: it is the width at which the content's own
+ *      proportions (823/582 = 1.4146) match A4's 1.4142, so one page fills
+ *      without either cropping or a blank lower third.
+ *   4. For the PNG, pin the width to its natural CSS measure inside a `zoom: 3`
+ *      context and screenshot the element.
  */
-export const RESUME_DOWNLOAD_URL = '/jeremy-ahamioje-resume.png'
+export const RESUME_DOWNLOAD_URL = '/jeremy-ahamioje-resume.pdf'
