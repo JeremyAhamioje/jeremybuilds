@@ -1,4 +1,3 @@
-import { MEDIA_ASSETS } from '../../lib/assets/mediaAssets.js'
 import { RESUME } from './resumeData.js'
 
 /**
@@ -9,50 +8,72 @@ import { RESUME } from './resumeData.js'
  * screenshot of a CV would manage. It sits on the dark page as a cream sheet,
  * which is what makes it read as a physical object worth picking up.
  *
+ * Engineering-facing layout. The reading order is the hierarchy the document is
+ * built around: name → role → what I do → things you can open and inspect →
+ * skills → history. No portrait: on this version it competed with the
+ * information an engineer is looking for, and the space is spent on the summary
+ * instead.
+ *
  * Class names carry the animation hooks; the motion itself lives in
  * aboutAnimation.js so this file stays purely structural.
  */
 export default function Resume() {
-  const headshot = MEDIA_ASSETS.headshot
+  const { meta } = RESUME
 
   return (
     <article className="resume" aria-label="Résumé">
+      {/*
+        Contact row. Real anchors, not spans: Chromium preserves link
+        annotations when it prints, so the repo and profile URLs stay clickable
+        in the downloaded PDF — the reader can go and look.
+      */}
       <header className="resume__meta">
-        <span>{RESUME.meta.location}</span>
-        <span>{RESUME.meta.site}</span>
-        <span>{RESUME.meta.email}</span>
+        <span>{meta.location}</span>
+        <MetaLink item={meta.site} />
+        <MetaLink item={meta.email} />
+        <MetaLink item={meta.github} />
+        <MetaLink item={meta.linkedin} />
       </header>
 
       <div className="resume__identity">
-        <div className="resume__identity-text">
-          <h3 className="resume__name" data-animate="name">
-            {RESUME.name}
-          </h3>
-          <p className="resume__role">{RESUME.role}</p>
-        </div>
-
-        {headshot ? (
-          <picture className="resume__portrait">
-            {headshot.sources.map((source) => (
-              <source
-                key={source.type}
-                type={source.type}
-                srcSet={source.srcSet}
-                sizes="(max-width: 900px) 34vw, 15vw"
-              />
-            ))}
-            <img
-              src={headshot.fallback}
-              width={headshot.width}
-              height={headshot.height}
-              alt={`${RESUME.name}, ${RESUME.role}`}
-              loading="lazy"
-              decoding="async"
-              draggable="false"
-            />
-          </picture>
-        ) : null}
+        <h3 className="resume__name" data-animate="name">
+          {RESUME.name}
+        </h3>
+        <p className="resume__role">{RESUME.role}</p>
+        <p className="resume__summary-lead">{RESUME.summary}</p>
       </div>
+
+      <section className="resume__projects">
+        <h4 className="resume__section-title" data-animate="title">
+          <span>Selected projects</span>
+        </h4>
+
+        <ul className="resume__project-grid">
+          {RESUME.projects.map((project) => (
+            <li className="resume__project" key={project.title}>
+              <h5 className="resume__project-title">
+                <ProjectName project={project} />
+                {project.live ? (
+                  <a
+                    className="resume__live"
+                    href={project.live}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    live
+                  </a>
+                ) : null}
+              </h5>
+              <p className="resume__project-stack">{project.stack}</p>
+              <ul className="resume__bullets">
+                {project.bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <div className="resume__columns">
         <section className="resume__column">
@@ -75,34 +96,68 @@ export default function Resume() {
               </li>
             ))}
           </ol>
+
+          {/*
+            Under the engineering history, in the same column, so it reads as
+            a footnote to it rather than a parallel track — and never in the
+            headline or the skills, where it would pull the positioning toward
+            data entry instead of toward an engineer who understands data.
+          */}
+          <h4 className="resume__section-title resume__section-title--secondary" data-animate="title">
+            <span>Additional experience</span>
+          </h4>
+
+          <div className="resume__entry">
+            <div className="resume__entry-head">
+              <span className="resume__period">
+                {RESUME.additional.href ? (
+                  <a href={RESUME.additional.href} target="_blank" rel="noopener noreferrer">
+                    {RESUME.additional.meta}
+                  </a>
+                ) : (
+                  RESUME.additional.meta
+                )}
+              </span>
+            </div>
+            <h5 className="resume__title">{RESUME.additional.title}</h5>
+            <p className="resume__summary">{RESUME.additional.summary}</p>
+          </div>
         </section>
 
         <section className="resume__column">
-          {RESUME.capabilities.map((group) => (
-            <div className="resume__group" key={group.group}>
-              <h4 className="resume__section-title" data-animate="title">
-                <span>{group.group}</span>
-              </h4>
-              <ul className="resume__list">
-                {group.items.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          <h4 className="resume__section-title" data-animate="title">
+            <span>Technical skills</span>
+          </h4>
+
+          <dl className="resume__skills">
+            {RESUME.skills.map((group) => (
+              <div className="resume__skill-group" key={group.group}>
+                <dt>{group.group}</dt>
+                <dd>{group.items}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
       </div>
-
-      <footer className="resume__toolkit">
-        <h4 className="resume__section-title" data-animate="title">
-          <span>Toolkit</span>
-        </h4>
-        <ul className="resume__tags">
-          {RESUME.toolkit.map((tool) => (
-            <li key={tool}>{tool}</li>
-          ))}
-        </ul>
-      </footer>
     </article>
+  )
+}
+
+function MetaLink({ item }) {
+  return (
+    <a href={item.href} target={item.href.startsWith('mailto:') ? undefined : '_blank'} rel="noopener noreferrer">
+      {item.label}
+    </a>
+  )
+}
+
+/** The title links to the repo when there is one; a project with no public code is plain text. */
+function ProjectName({ project }) {
+  if (!project.href) return <span>{project.title}</span>
+
+  return (
+    <a href={project.href} target="_blank" rel="noopener noreferrer">
+      {project.title}
+    </a>
   )
 }

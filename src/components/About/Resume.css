@@ -16,8 +16,13 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: clamp(1.1rem, 1.9vw, 1.9rem);
-  padding: clamp(1.4rem, 2.4vw, 2.5rem);
+  /*
+   * Tighter than the design-led version. The document now carries a projects
+   * section and grouped skills, and at the old spacing it ran to 1.7 A4 pages —
+   * these values, with the body a step smaller, are what bring it back to one.
+   */
+  gap: clamp(0.9rem, 1.5vw, 1.45rem);
+  padding: clamp(1.2rem, 2vw, 2rem);
   background: var(--paper);
   color: var(--ink-body);
   font-family: var(--font-sans);
@@ -33,8 +38,15 @@
 
 .resume__meta {
   display: flex;
+  /*
+   * Five items now, not three, so the row is allowed to wrap — but each item
+   * is kept whole. Without `nowrap` the flex algorithm shrinks the location
+   * first and "Lagos, Nigeria · Remote" broke into three lines while the
+   * links beside it stayed intact.
+   */
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 0.35rem 1rem;
   padding-bottom: 0.7rem;
   border-bottom: 1px solid var(--paper-rule);
   font-size: clamp(0.52rem, 0.62vw, 0.66rem);
@@ -42,13 +54,46 @@
   color: var(--ink-muted);
 }
 
+.resume__meta > * {
+  white-space: nowrap;
+}
+
+/*
+ * Contact links look like the plain text beside them. They ARE links — so the
+ * PDF keeps them clickable — but a row of underlined blue would make the top of
+ * a CV look like a footer. The colour shift on hover is the only tell.
+ */
+.resume__meta a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.resume__meta a:hover,
+.resume__meta a:focus-visible {
+  color: var(--ink-strong);
+}
+
 /* --------------------------------------------------------------- identity */
 
 .resume__identity {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1.5rem;
+  flex-direction: column;
+  gap: 0;
+}
+
+/*
+ * The summary takes the room the portrait used to hold. Measure-limited so it
+ * reads as a paragraph rather than a banner, and set a step above body copy —
+ * it is the one place the document speaks in the first person.
+ */
+.resume__summary-lead {
+  max-width: 64ch;
+  margin: clamp(0.7rem, 1.2vw, 1.1rem) 0 0;
+  font-size: clamp(0.66rem, 0.82vw, 0.8rem);
+  line-height: 1.5;
+  color: var(--ink-body);
+  text-wrap: pretty;
 }
 
 .resume__name {
@@ -68,21 +113,103 @@
   color: var(--ink-muted);
 }
 
-/* Portrait sits flush with the name's baseline block, like a passport photo. */
-.resume__portrait {
-  flex-shrink: 0;
-  width: clamp(4.6rem, 9vw, 7.4rem);
-  border-radius: 2px;
-  overflow: hidden;
-  line-height: 0;
+/* --------------------------------------------------------------- projects */
+
+/*
+ * Selected projects sit between the summary and the columns, full width, in a
+ * two-up grid. They come BEFORE experience on purpose: each one is a repo or a
+ * live URL the reader can open, which is worth more than a job description
+ * they have to take on trust. Two columns keeps four projects to roughly the
+ * height of two, which is what lets the whole document stay on one page.
+ */
+.resume__projects {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0.2rem;
+  border-top: 1px solid var(--paper-rule);
 }
 
-.resume__portrait img {
-  display: block;
-  width: 100%;
-  height: auto;
-  aspect-ratio: 3 / 4;
-  object-fit: cover;
+.resume__project-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.7rem, 1.2vw, 1rem) clamp(1.2rem, 2.4vw, 2.4rem);
+  margin: clamp(0.7rem, 1.2vw, 1rem) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resume__project {
+  min-width: 0;
+}
+
+.resume__project-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin: 0;
+  font-size: clamp(0.78rem, 1.02vw, 1rem);
+  font-weight: 500;
+  color: var(--ink-strong);
+}
+
+.resume__project-title a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.resume__project-title a:hover,
+.resume__project-title a:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+/* "live" — a small tag, not a second title. */
+.resume__live {
+  padding: 0.12em 0.5em;
+  border: 1px solid var(--paper-rule);
+  border-radius: 999px;
+  font-size: 0.62em;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* The stack line: what it is built with, set as a caption under the name. */
+.resume__project-stack {
+  margin: 0.25em 0 0;
+  font-size: clamp(0.52rem, 0.62vw, 0.66rem);
+  letter-spacing: 0.04em;
+  color: var(--ink-muted);
+}
+
+.resume__bullets {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  margin: 0.5em 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: clamp(0.6rem, 0.72vw, 0.72rem);
+  line-height: 1.4;
+  color: var(--ink-body);
+  text-wrap: pretty;
+}
+
+.resume__bullets li {
+  position: relative;
+  padding-left: 0.85em;
+}
+
+.resume__bullets li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ink-muted);
 }
 
 /* ---------------------------------------------------------------- columns */
@@ -98,7 +225,7 @@
 .resume__column {
   display: flex;
   flex-direction: column;
-  gap: clamp(0.9rem, 1.6vw, 1.5rem);
+  gap: clamp(0.7rem, 1.2vw, 1.1rem);
   min-width: 0;
 }
 
@@ -109,7 +236,7 @@
  */
 .resume__section-title {
   position: relative;
-  margin: 1.1rem 0 0;
+  margin: 0.85rem 0 0;
   font-size: clamp(0.55rem, 0.68vw, 0.7rem);
   font-weight: 600;
   letter-spacing: 0.19em;
@@ -150,8 +277,14 @@
 }
 
 .resume__group:first-child .resume__section-title,
-.resume__column > .resume__section-title:first-child {
+.resume__column > .resume__section-title:first-child,
+.resume__projects > .resume__section-title:first-child {
   margin-top: 0;
+}
+
+/* A second heading inside a column sits closer than a fresh section would. */
+.resume__section-title--secondary {
+  margin-top: 0.4rem;
 }
 
 /* ---------------------------------------------------------------- entries */
@@ -159,7 +292,7 @@
 .resume__entries {
   display: flex;
   flex-direction: column;
-  gap: clamp(0.85rem, 1.5vw, 1.35rem);
+  gap: clamp(0.7rem, 1.2vw, 1rem);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -190,8 +323,8 @@
 
 .resume__summary {
   margin: 0.4em 0 0;
-  font-size: clamp(0.64rem, 0.8vw, 0.79rem);
-  line-height: 1.5;
+  font-size: clamp(0.6rem, 0.72vw, 0.72rem);
+  line-height: 1.4;
   color: var(--ink-body);
   text-wrap: pretty;
 }
@@ -210,7 +343,7 @@
   margin: 0.55rem 0 0;
   padding: 0;
   list-style: none;
-  font-size: clamp(0.64rem, 0.8vw, 0.79rem);
+  font-size: clamp(0.6rem, 0.72vw, 0.72rem);
   line-height: 1.4;
   color: var(--ink-body);
 }
@@ -231,35 +364,59 @@
   background: var(--ink-muted);
 }
 
-/* ---------------------------------------------------------------- toolkit */
+/* ----------------------------------------------------------------- skills */
 
-.resume__toolkit {
-  padding-top: clamp(0.6rem, 1.2vw, 1rem);
-  border-top: 1px solid var(--paper-rule);
-}
-
-.resume__tags {
+/*
+ * Grouped skills as a definition list: the group name is a run-in label, the
+ * items follow as prose. Six groups as pills would have been a hundred pills;
+ * as labelled lines they scan in the order the groups are written, which is
+ * the order they are meant to be weighed.
+ */
+.resume__skills {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.36rem 0.4rem;
-  margin: 0.6rem 0 0;
-  padding: 0;
-  list-style: none;
+  flex-direction: column;
+  gap: 0.45em;
+  margin: 0.55rem 0 0;
+  font-size: clamp(0.6rem, 0.72vw, 0.72rem);
+  line-height: 1.4;
+  color: var(--ink-body);
 }
 
-.resume__tags li {
-  padding: 0.28em 0.62em;
-  border: 1px solid var(--paper-rule);
-  border-radius: 999px;
-  font-size: clamp(0.55rem, 0.68vw, 0.68rem);
-  letter-spacing: 0.03em;
-  color: var(--ink-body);
+.resume__skill-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.05em;
+}
+
+.resume__skills dt {
+  font-size: 0.86em;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-strong);
+}
+
+.resume__skills dd {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+/* The Upwork line under Additional experience is a link; keep it quiet. */
+.resume__period a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.resume__period a:hover,
+.resume__period a:focus-visible {
+  color: var(--ink-strong);
 }
 
 /* ----------------------------------------------------------------- narrow */
 
 @media (max-width: 900px) {
-  .resume__columns {
+  .resume__columns,
+  .resume__project-grid {
     grid-template-columns: 1fr;
     gap: 1.2rem;
   }
